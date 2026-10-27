@@ -547,11 +547,11 @@ svg .jt{font-family:var(--f-disp);font-weight:700;font-size:13px;letter-spacing:
 .mini .face{inset:9%}
 .mini .face i{width:80%}
 .mini .face.f1 i.on{width:95%}
-.cup{position:absolute;right:max(10px, 3%);bottom:10px;width:calc(var(--dz) * 1.45);height:calc(var(--dz) * 1.75);padding:0;border:0;background:none;touch-action:none;-webkit-touch-callout:none;z-index:3}
+.cup{position:absolute;right:max(10px, 3%);bottom:10px;width:calc(var(--dz) * 1.45);height:calc(var(--dz) * 1.75);padding:0;border:0;background:none;touch-action:manipulation;-webkit-touch-callout:none;z-index:3}
+.cup:active svg{transform:rotate(-10deg) scale(.96)}
 .cup svg{width:100%;height:100%;display:block;filter:drop-shadow(0 6px 8px rgba(0,0,0,.5))}
 .cup:disabled{opacity:.35}
 .cup.ready svg{animation:wiggle 2.4s ease-in-out infinite}
-.cup.shaking svg{animation:none}
 @keyframes wiggle{0%,80%,100%{transform:rotate(0)}85%{transform:rotate(-7deg)}90%{transform:rotate(6deg)}95%{transform:rotate(-3deg)}}
 .cup .cl{position:absolute;left:50%;top:-4px;transform:translate(-50%, -100%);text-shadow:0 1px 2px rgba(0,0,0,.6);white-space:nowrap;font-size:calc(12px * var(--k));color:var(--chalk-dim)}
 .kinfo{grid-area:info;display:flex;flex-direction:column;gap:8px}
@@ -800,7 +800,7 @@ svg .jt{font-family:var(--f-disp);font-weight:700;font-size:13px;letter-spacing:
           <ellipse cx="50" cy="22" rx="36" ry="10" fill="#2f1a0b" stroke="#ddb75c" stroke-width="3"/>
           <ellipse cx="50" cy="23" rx="29" ry="6.5" fill="#1a0e05"/>
         </svg>
-        <span class="cl" id="kCupLbl">klepni nebo zatřes</span>
+        <span class="cl" id="kCupLbl">klepni</span>
       </button>
     </section>
     <section class="kinfo">
@@ -830,7 +830,7 @@ svg .jt{font-family:var(--f-disp);font-weight:700;font-size:13px;letter-spacing:
       <button type="button" data-t="5000">5 000</button>
       <button type="button" data-t="10000">10 000</button>
     </div>
-    <p><b>Jak házet:</b> klepni na kelímek, nebo ho chyť prstem, zatřes s ním sem a tam a pusť. Kostky, které chceš odložit, vybereš klepnutím.</p>
+    <p><b>Jak házet:</b> klepni na kelímek, nebo na tlačítko Hodit. Kostky, které chceš odložit, vybereš klepnutím.</p>
     <div class="row"><button class="primary" id="kRulesOk" type="button">Rozumím</button></div>
   </div>
 </div>
@@ -3187,8 +3187,8 @@ function kRender(){
   const canCup = mine && !kAnimLock && (K.phase === "roll" || (K.phase === "pick" && kSel.size && kScore(kSelVals()) > 0));
   cup.disabled = !mine || !(K.phase === "roll" || K.phase === "pick");
   cup.classList.toggle("ready", canCup);
-  $("kCupLbl").textContent = mine && (K.phase === "roll" || K.phase === "pick") ? "klepni nebo zatřes" : "";
-  $("kHint").textContent = !K.dice.length ? (K.turn === "p" ? `Hoď ${K.n === 6 ? "všemi šesti kostkami" : K.n + " kostkami"}: klepni na kelímek, nebo s ním zatřes.` : "Na řadě je robot.") : "";
+  $("kCupLbl").textContent = mine && (K.phase === "roll" || K.phase === "pick") ? "klepni" : "";
+  $("kHint").textContent = !K.dice.length ? (K.turn === "p" ? `Hoď ${K.n === 6 ? "všemi šesti kostkami" : K.n + " kostkami"}: klepni na kelímek.` : "Na řadě je robot.") : "";
 
   $("kLog").textContent = K.log || "";
   const say = $("kSay");
@@ -3262,82 +3262,23 @@ function kEnter(){
   if (!store.get("kostky-seen-rules")){ openSheet("kRules"); store.set("kostky-seen-rules", true); }
 }
 
-/* ---------- kelímek: klepnutí, třesení prstem, třepání telefonem ---------- */
-let cupDrag = null;
+/* ---------- kelímek: hází se klepnutím ---------- */
 function cupCanRoll(){
   if (!kMine() || kAnimLock) return false;
   return K.phase === "roll" || (K.phase === "pick" && kSel.size > 0);
 }
-$("kCup").addEventListener("pointerdown", e => {
-  kTryMotion();
-  if (!kMine() || cupDrag) return;
-  if (e.pointerType === "mouse" && e.button !== 0) return;
-  cupDrag = {id:e.pointerId, x0:e.clientX, y0:e.clientY, lx:e.clientX, ly:e.clientY, dir:0, shakes:0, moved:false};
-  try { $("kCup").setPointerCapture(e.pointerId); } catch(_) {}
-  $("kCup").classList.add("shaking");
-});
-$("kCup").addEventListener("pointermove", e => {
-  const d = cupDrag; if (!d || e.pointerId !== d.id) return;
-  const dx = e.clientX - d.x0, dy = e.clientY - d.y0;
-  if (Math.hypot(dx, dy) > 8) d.moved = true;
-  const mx = e.clientX - d.lx, my = e.clientY - d.ly;
-  const step = Math.abs(mx) > Math.abs(my) ? mx : my;
-  if (Math.abs(step) > 14){
-    const dir = Math.sign(step);
-    if (dir !== d.dir){ d.shakes++; d.dir = dir; Sound.shake(); buzz(8); }
-    d.lx = e.clientX; d.ly = e.clientY;
-  }
-  $("kCup").style.transform = `translate(${Math.max(-60, Math.min(60, dx))}px, ${Math.max(-60, Math.min(40, dy))}px) rotate(${Math.max(-20, Math.min(20, dx / 3))}deg)`;
-});
-function cupEnd(e, cancelled){
-  const d = cupDrag; if (!d || e.pointerId !== d.id) return;
-  cupDrag = null;
-  const cup = $("kCup");
-  cup.classList.remove("shaking");
-  cup.style.transition = "transform .2s ease"; cup.style.transform = "";
-  setTimeout(() => { cup.style.transition = ""; }, 220);
-  if (cancelled) return;
+$("kCup").addEventListener("click", () => {
+  if (!kMine()) return;
   if (!cupCanRoll()){
-    if (kMine() && K.phase === "pick") kFlash("Než hodíš znovu, vyber kostky, které si odkládáš.");
+    if (K.phase === "pick") kFlash("Než hodíš znovu, vyber kostky, které si odkládáš.");
     return;
   }
   kRoll();
-}
-$("kCup").addEventListener("pointerup", e => cupEnd(e, false));
-$("kCup").addEventListener("pointercancel", e => cupEnd(e, true));
-$("kCup").addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " "){ e.preventDefault(); if (cupCanRoll()) kRoll(); } });
-
-// třepání telefonem: funguje jen tam, kde to prohlížeč dovolí (mimo Claude jako samostatná stránka)
-let motionTried = false, motionOn = false, shakeHits = [], lastMag = null, shakeBlock = 0;
-function kTryMotion(){
-  if (motionTried) return;
-  motionTried = true;
-  const D = window.DeviceMotionEvent;
-  if (!D) return;
-  const listen = () => { addEventListener("devicemotion", kOnMotion); motionOn = true; };
-  try {
-    if (typeof D.requestPermission === "function") D.requestPermission().then(s => { if (s === "granted") listen(); }).catch(() => {});
-    else listen();
-  } catch(_) {}
-}
-function kOnMotion(e){
-  if (screen !== "kostky" || !cupCanRoll()) return;
-  const a = e.accelerationIncludingGravity || e.acceleration;
-  if (!a || a.x === null) return;
-  const mag = Math.hypot(a.x || 0, a.y || 0, a.z || 0), now = Date.now();
-  if (lastMag !== null && Math.abs(mag - lastMag) > 11 && now > shakeBlock){
-    shakeHits = shakeHits.filter(t => now - t < 900);
-    shakeHits.push(now);
-    Sound.shake();
-    if (shakeHits.length >= 3){ shakeHits = []; shakeBlock = now + 1500; kRoll(); }
-  }
-  lastMag = mag;
-}
+});
 
 $("kDice").addEventListener("click", e => { const b = e.target.closest(".die[data-i]"); if (b && !b.disabled) kToggle(+b.dataset.i); });
 $("kActs").addEventListener("click", e => {
   const b = e.target.closest("button[data-act]"); if (!b || b.disabled) return;
-  kTryMotion();
   if (b.dataset.act === "roll") kRoll(); else if (b.dataset.act === "bank") kBank();
 });
 $("kMenuBtn").onclick = openMenu;

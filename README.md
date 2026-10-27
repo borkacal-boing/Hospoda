@@ -32,10 +32,8 @@ Všechny hry mají společnou peněženku (na začátku 100 grošů), hudbu na a
 2. Klepni na tlačítko **Sdílet** (čtvereček se šipkou) → **Přidat na plochu** → **Přidat**.
 3. Na ploše se objeví ikona Hospoda. Aplikace se otevírá přes celou obrazovku a po prvním spuštění jde i bez internetu.
 
-**Třepání telefonem v kostkách:** při prvním klepnutí na kelímek se iPhone zeptá, jestli smí aplikace používat pohyb a orientaci. Po povolení stačí telefonem zatřást a kostky se hodí. Klepnutí na kelímek nebo třesení kelímkem prstem funguje vždycky.
-
 ## Úpravy a nové verze
 
-Když změníš `index.html`, zvyš v `sw.js` číslo verze (`hospoda-v13` → `hospoda-v14`) a nahraj oba soubory. Telefon si novou verzi stáhne při dalším otevření s internetem (někdy je potřeba aplikaci zavřít a otevřít dvakrát).
+Když změníš `index.html`, zvyš v `sw.js` číslo verze (`hospoda-v14` → `hospoda-v15`) a nahraj oba soubory. Telefon si novou verzi stáhne při dalším otevření s internetem (někdy je potřeba aplikaci zavřít a otevřít dvakrát).
 
 Postup (peníze, reputace, skóre, sekera, úkoly, rozehrané hry) se ukládá jen v daném telefonu. Verze z Claude a verze z GitHubu mají každá svůj vlastní postup.
