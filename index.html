@@ -389,14 +389,18 @@ svg .rib{font-family:var(--f-disp);font-weight:700;font-size:12.5px;letter-spaci
 .sign p{margin:8px 0 0;font-size:calc(17px * var(--k));color:var(--chalk-dim);text-wrap:balance}
 .sign .hops{display:flex;justify-content:center;gap:10px;margin-top:10px;opacity:.85}
 .sign .hops svg{width:26px;height:26px}
+.coasters > .coaster:last-child:nth-child(odd){grid-column:1 / -1;justify-self:center;width:calc(50% - clamp(14px, 4vw, 26px) / 2)}
 .coasters{width:min(100%, 540px);display:grid;grid-template-columns:repeat(2, minmax(0, 1fr));gap:clamp(14px, 4vw, 26px)}
-.coaster{--ring:var(--red);position:relative;aspect-ratio:1;max-width:100%;border:0;border-radius:50%;padding:12%;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;color:var(--ink);text-align:center;
+/* tácek je vždy kruh: výšku dává ::before (padding v % = šířka tácku), obsah leží absolutně uvnitř; nespoléhá na aspect-ratio, které Safari u tlačítek nedodržuje */
+.coaster{--ring:var(--red);position:relative;display:block;width:100%;max-width:100%;height:auto;align-self:start;border:0;border-radius:50%;padding:0;overflow:visible;
+  color:var(--ink);text-align:center;-webkit-appearance:none;appearance:none;
   background:radial-gradient(circle at 38% 30%, #fffaf0 0%, var(--paper) 45%, #eadfc2 100%);
   box-shadow:inset 0 0 0 7px var(--ring), inset 0 0 0 10px var(--paper), inset 0 0 0 11.5px var(--ring), 0 6px 0 rgba(0,0,0,.25), 0 12px 22px rgba(0,0,0,.35);
   transform:rotate(var(--rot, 0deg));transition:transform .15s ease}
 .coaster:active{transform:rotate(var(--rot, 0deg)) scale(.96)}
-.coaster svg{width:44%;height:auto;flex:0 0 auto}
+.coaster::before{content:"";display:block;padding-top:100%}
+.coaster .cin{position:absolute;inset:13%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-width:0}
+.coaster svg{width:50%;height:auto;flex:0 0 auto;max-height:55%}
 .coaster b{font-family:var(--f-disp);font-weight:700;font-size:calc(clamp(20px, 5.6vw, 27px) * var(--k));line-height:1.05}
 .coaster small{font-size:calc(14px * var(--k));color:#6b5a44;line-height:1.2}
 .coaster.soon{filter:saturate(.35);opacity:.72}
@@ -620,6 +624,118 @@ svg .jt{font-family:var(--f-disp);font-weight:700;font-size:13px;letter-spacing:
 .lv-bar i{display:block;height:100%;width:0;border-radius:5px;background:linear-gradient(90deg, var(--brass-deep), var(--brass));transition:width .6s ease}
 .lv-text{font-size:calc(14px * var(--k));color:var(--chalk-dim);font-variant-numeric:tabular-nums}
 
+/* ================= HERZKY ================= */
+/* Layout: nahoře tři soupeři (vlevo, naproti, vpravo), uprostřed štych do kříže, pod ním rada, dole vlastní ruka. */
+#scrHerz{--zfit:1;--zw:calc(min(15vw, 8.6vh, 92px) * var(--kc) * var(--zfit));--zh:calc(var(--zw) * 1.5);--tw:calc(var(--zw) * .92)}
+.htable{grid-template-rows:auto auto minmax(0, 1fr) auto auto;grid-template-areas:"bar" "seats" "trick" "info" "hand"}
+.hseats{grid-area:seats;display:grid;grid-template-columns:repeat(3, minmax(0, 1fr));gap:8px}
+.seat{position:relative;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 6px 8px;border-radius:14px;background:rgba(0,0,0,.2);border:1.5px solid rgba(244,238,219,.18);min-width:0}
+.seat.on{border-color:var(--brass);background:rgba(221,183,92,.16);box-shadow:0 0 0 2px rgba(221,183,92,.25)}
+.seat .nm{font-family:var(--f-disp);font-size:calc(15px * var(--k));letter-spacing:.04em;color:var(--chalk);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.seat .pos{font-size:calc(12px * var(--k));color:var(--chalk-dim)}
+.seat .pts{font-family:var(--f-disp);font-weight:700;font-size:calc(22px * var(--k));color:var(--chalk);font-variant-numeric:tabular-nums;line-height:1}
+.seat .pts small{font-family:var(--f-ui);font-weight:500;font-size:calc(12px * var(--k));color:var(--chalk-dim)}
+.seat .took{font-size:calc(13px * var(--k));color:#ffb3a8;font-variant-numeric:tabular-nums;min-height:1.2em}
+.seat .backs{display:flex;justify-content:center;height:calc(var(--zw) * .42)}
+.seat .backs .zc{width:calc(var(--zw) * .28);height:calc(var(--zw) * .42);box-shadow:0 1px 2px rgba(0,0,0,.35)}
+.seat .backs .zc + .zc{margin-left:calc(var(--zw) * -.2)}
+.htrick{grid-area:trick;position:relative;min-height:calc(var(--tw) * 2.6)}
+.htrick .slot{position:absolute;width:var(--tw);height:calc(var(--tw) * 1.5);border-radius:calc(var(--tw) * .085);border:2px dashed rgba(244,238,219,.14)}
+.htrick .slot .zc{position:absolute;inset:0;width:100%;height:100%}
+.htrick .slot.s0{left:50%;bottom:4px;transform:translateX(-50%)}
+.htrick .slot.s2{left:50%;top:4px;transform:translateX(-50%)}
+.htrick .slot.s1{left:calc(50% - var(--tw) * 1.75);top:50%;transform:translateY(-50%) rotate(-6deg)}
+.htrick .slot.s3{left:calc(50% + var(--tw) * .75);top:50%;transform:translateY(-50%) rotate(6deg)}
+.htrick .slot .zc.in0{animation:fromP .32s cubic-bezier(.2,.8,.3,1)}
+.htrick .slot .zc.in1{animation:inL .32s cubic-bezier(.2,.8,.3,1)}
+.htrick .slot .zc.in2{animation:fromR .32s cubic-bezier(.2,.8,.3,1)}
+.htrick .slot .zc.in3{animation:inR .32s cubic-bezier(.2,.8,.3,1)}
+.htrick .slot.win .zc{box-shadow:0 0 0 3px var(--brass), 0 8px 16px rgba(0,0,0,.4)}
+.htrick.away .slot .zc{transition:transform .45s ease-in, opacity .45s ease-in;opacity:0}
+.htrick.away.to0 .slot .zc{transform:translateY(40vh)} .htrick.away.to2 .slot .zc{transform:translateY(-30vh)}
+.htrick.away.to1 .slot .zc{transform:translateX(-60vw)} .htrick.away.to3 .slot .zc{transform:translateX(60vw)}
+@keyframes inL{from{transform:translate(-40vw, 0) rotate(-20deg)}}
+@keyframes inR{from{transform:translate(40vw, 0) rotate(20deg)}}
+.hbroken{position:absolute;right:4px;top:4px;display:flex;align-items:center;gap:4px;padding:2px 8px;border-radius:999px;background:rgba(0,0,0,.3);font-size:calc(12px * var(--k));color:#ffb3a8}
+.hbroken svg{width:14px;height:14px}
+.hinfo{grid-area:info}
+.hinfo .status{width:100%;padding:6px 10px}
+.hinfo .status .say{font-size:calc(clamp(15px, 4.1vw, 18px) * var(--k))}
+.hinfo .status .log{font-size:calc(14px * var(--k))}
+:root[data-hint="off"] .hinfo .status .log{display:none}
+:root[data-hint="off"] .hinfo .status{display:block}
+#hPhand .zc.ok{transform:translateY(-14px);box-shadow:0 0 0 3px var(--brass), 0 10px 18px rgba(0,0,0,.45)}
+#hPhand .zc.no{filter:brightness(.6) saturate(.65)}
+.htab{width:100%;border-collapse:collapse;margin:4px 0 12px;font-size:calc(17px * var(--k));font-variant-numeric:tabular-nums}
+.htab th{font-size:calc(13px * var(--k));font-weight:500;color:#6b5a44;text-align:right;padding:2px 6px}
+.htab th:first-child{text-align:left}
+.htab td{padding:6px;border-bottom:1px solid #e6dbbd;text-align:right}
+.htab td:first-child{text-align:left;font-weight:700}
+.htab tr.me td{background:#eef6ef}
+.htab tr.best td:first-child::after{content:" ★";color:var(--brass-deep)}
+.htab td.plus{color:var(--red);font-weight:700}
+@media (orientation: landscape){
+  #scrHerz{--zw:calc(min(7.4vw, 14.5vh, 92px) * var(--kc) * var(--zfit))}
+  .htable{grid-template-columns:minmax(200px, 30%) minmax(0, 1fr);grid-template-rows:auto minmax(0, 1fr) auto auto;
+    grid-template-areas:"bar bar" "seats trick" "info trick" "hand hand";column-gap:14px;padding-top:6px;padding-bottom:6px}
+  .hseats{grid-template-columns:1fr;gap:6px;align-content:start}
+  .seat{flex-direction:row;flex-wrap:wrap;justify-content:space-between;padding:5px 10px}
+  .seat .backs{display:none}
+  .hinfo .status .log{display:none}
+}
+
+/* ================= MARIÁŠ (beta) ================= */
+/* Layout: nahoře dva soupeři, uprostřed štych do trojúhelníku, pod ním rada a tlačítka, dole vlastní ruka. */
+#scrMar{--zfit:1;--zw:calc(min(14.5vw, 8.2vh, 90px) * var(--kc) * var(--zfit));--zh:calc(var(--zw) * 1.5);--tw:calc(var(--zw) * .95)}
+.mtable{grid-template-rows:auto auto minmax(0, 1fr) auto auto;grid-template-areas:"bar" "seats" "trick" "info" "hand"}
+.mseats{grid-template-columns:repeat(2, minmax(0, 1fr))}
+.seat .badge{position:absolute;left:8px;top:-9px;padding:0 8px;border-radius:999px;background:var(--brass);color:var(--ink);font-size:calc(12px * var(--k));font-weight:700}
+.mtrick .slot{position:absolute;width:var(--tw);height:calc(var(--tw) * 1.5);border-radius:calc(var(--tw) * .085);border:2px dashed rgba(244,238,219,.14)}
+.mtrick .slot .zc{position:absolute;inset:0;width:100%;height:100%}
+.mtrick .slot.m0{left:50%;bottom:4px;transform:translateX(-50%)}
+.mtrick .slot.m1{left:calc(50% - var(--tw) * 1.45);top:8px;transform:rotate(-7deg)}
+.mtrick .slot.m2{left:calc(50% + var(--tw) * .45);top:8px;transform:rotate(7deg)}
+.mtrick .slot .zc.in0{animation:fromP .32s cubic-bezier(.2,.8,.3,1)}
+.mtrick .slot .zc.in1{animation:inL .32s cubic-bezier(.2,.8,.3,1)}
+.mtrick .slot .zc.in2{animation:inR .32s cubic-bezier(.2,.8,.3,1)}
+.mtrick .slot.win .zc{box-shadow:0 0 0 3px var(--brass), 0 8px 16px rgba(0,0,0,.4)}
+.mtrick .talon{position:absolute;left:6px;bottom:6px;display:flex;align-items:center;gap:6px;font-size:calc(12px * var(--k));color:var(--chalk-dim)}
+.mtrick .talon .zc{width:calc(var(--zw) * .36);height:calc(var(--zw) * .54)}
+.mtrick .talon .zc + .zc{margin-left:calc(var(--zw) * -.26)}
+.mtrump{display:inline-flex;align-items:center;gap:6px;padding:3px 10px 3px 4px;border-radius:999px;background:var(--paper);color:var(--ink);font-weight:700;font-size:calc(15px * var(--k));white-space:nowrap}
+.mtrump svg{width:calc(24px * var(--k));height:calc(24px * var(--k))}
+.minfo{display:flex;flex-direction:column;gap:8px}
+#mPhand .zc.ok{transform:translateY(-14px);box-shadow:0 0 0 3px var(--brass), 0 10px 18px rgba(0,0,0,.45)}
+#mPhand .zc.no{filter:brightness(.6) saturate(.65)}
+#mPhand .zc.sel{transform:translateY(-16px);box-shadow:0 0 0 3px var(--chalk), 0 10px 18px rgba(0,0,0,.45)}
+#mPhand .zc.hid{filter:brightness(.35) saturate(.3)}
+.beta-tag,.coaster .stamp.beta{font-family:var(--f-ui);font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.beta-tag{font-size:.45em;vertical-align:middle;padding:2px 8px;border-radius:6px;border:2px solid var(--felt);color:var(--felt)}
+.coaster .stamp.beta{border-color:var(--felt);color:var(--felt)}
+.zbar .beta-tag{font-size:.8em;padding:0 6px;border-color:var(--brass);color:var(--brass)}
+@media (orientation: landscape){
+  #scrMar{--zw:calc(min(7.2vw, 14vh, 90px) * var(--kc) * var(--zfit))}
+  .mtable{grid-template-columns:minmax(220px, 32%) minmax(0, 1fr);grid-template-rows:auto auto minmax(0, 1fr) auto;
+    grid-template-areas:"bar bar" "seats trick" "info trick" "hand hand";column-gap:14px;padding-top:6px;padding-bottom:6px}
+  .mseats{grid-template-columns:1fr;gap:10px}
+  .minfo .status .log{display:none}
+}
+
+/* ================= KOSTKY: výběr soupeře ================= */
+.opps{display:flex;flex-direction:column;gap:10px;margin:6px 0 14px}
+.opp{display:grid;grid-template-columns:auto minmax(0, 1fr);grid-template-rows:auto auto;column-gap:12px;row-gap:2px;align-items:center;text-align:left;
+  padding:12px 14px;border-radius:16px;border:2px solid #d9cba3;background:#fff;color:var(--ink)}
+.opp:active{background:#f2ead2}
+.opp .av{grid-row:1 / 3;width:calc(54px * var(--k));height:calc(54px * var(--k));border-radius:50%;display:grid;place-items:center;font-family:var(--f-disp);font-weight:700;font-size:calc(26px * var(--k));color:var(--paper)}
+.opp .on{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px}
+.opp .on b{font-family:var(--f-disp);font-size:calc(22px * var(--k))}
+.opp .lv{padding:1px 8px;border-radius:999px;font-size:calc(13px * var(--k));font-weight:700;color:#fff}
+.opp .ds{font-size:calc(15px * var(--k));line-height:1.35;color:#5b4a33}
+.opp .rec{font-size:calc(13px * var(--k));color:#8a7a5e;font-variant-numeric:tabular-nums}
+.opp.cont{border-style:dashed;grid-template-columns:minmax(0, 1fr)}
+.opp.cont b{font-size:calc(18px * var(--k))}
+.kquote{margin:4px 0 12px;padding:12px 14px;border-left:5px solid var(--red);border-radius:6px;background:#f6ecd8;font-family:var(--f-disp);font-size:calc(21px * var(--k));line-height:1.3;color:var(--ink);text-wrap:balance}
+
 /* ================= SEKERA ================= */
 .hub-acts{width:min(100%, 540px);display:flex;flex-wrap:wrap;gap:10px}
 .hub-acts .zbtn{flex:1 1 10em;min-height:calc(56px * var(--k))}
@@ -702,7 +818,8 @@ svg .jt{font-family:var(--f-disp);font-weight:700;font-size:13px;letter-spacing:
       <button class="coaster" type="button" data-game="prsi" style="--ring:#b8261f;--rot:-3deg" id="cPrsi"></button>
       <button class="coaster" type="button" data-game="zol" style="--ring:#1d6a43;--rot:2.5deg" id="cZol"></button>
       <button class="coaster" type="button" data-game="kostky" style="--ring:#2c4f8c;--rot:2deg" id="cKostky"></button>
-      <button class="coaster soon" type="button" data-game="marias" style="--ring:#6a3e17;--rot:-2deg" id="cMarias"></button>
+      <button class="coaster" type="button" data-game="herzky" style="--ring:#8c1f22;--rot:-2.5deg" id="cHerz"></button>
+      <button class="coaster" type="button" data-game="marias" style="--ring:#6a3e17;--rot:-2deg" id="cMarias"></button>
     </nav>
     <p class="hub-note" id="hubNote" role="status" aria-live="polite"></p>
   </div>
@@ -811,10 +928,19 @@ svg .jt{font-family:var(--f-disp);font-weight:700;font-size:13px;letter-spacing:
 </div>
 </div>
 
+<div class="overlay" id="kPick" hidden>
+  <div class="sheet" role="dialog" aria-labelledby="kPickTitle">
+    <h2 id="kPickTitle">S kým budeš hrát kostky?</h2>
+    <div class="opps" id="kOpps"></div>
+    <div class="row"><button class="second" id="kPickHome" type="button">Zpět do hospody</button></div>
+  </div>
+</div>
+
 <div class="overlay" id="kRules" hidden>
   <div class="sheet" role="dialog" aria-labelledby="kRulesTitle">
     <h2 id="kRulesTitle">Jak se hraje farma</h2>
     <ul>
+      <li>Hraješ proti soupeři, kterého si vybereš: <b>Danek</b> je nejsnazší, <b>Martin</b> střední a <b>Kokeš</b> nejtěžší. Soupeř zůstává, dokud se nevrátíš do hospody.</li>
       <li>Hází se <b>šesti kostkami</b>. Po každém hodu si odložíš aspoň jednu kostku, která boduje.</li>
       <li>Pak buď <b>házíš dál</b> se zbylými kostkami, nebo si body za kolo <b>zapíšeš</b>.</li>
       <li>Když v hodu nepadne <b>žádná kombinace</b>, body za celé kolo propadnou a hraje soupeř.</li>
@@ -839,6 +965,7 @@ svg .jt{font-family:var(--f-disp);font-weight:700;font-size:13px;letter-spacing:
   <div class="sheet" role="dialog" aria-labelledby="kEndTitle">
     <div class="big-emblem" id="kEndEmblem"></div>
     <h2 id="kEndTitle"></h2>
+    <p class="kquote" id="kQuote" hidden></p>
     <span class="money" id="kEndMoney"></span>
     <p id="kEndText"></p>
     <div class="row"><button class="second" id="kEndHome" type="button">Do hospody</button><button class="primary" id="kAgain" type="button">Hrát znovu</button></div>
@@ -861,6 +988,109 @@ svg .jt{font-family:var(--f-disp);font-weight:700;font-size:13px;letter-spacing:
   </div>
 </div>
 
+<div class="screen" id="scrHerz" hidden>
+<div class="app">
+  <main class="ztable htable" id="hTable">
+    <header class="zbar">
+      <div class="wallet"><div class="credit" id="hCredit" aria-label="Kredit">100 grošů</div><div class="score" id="hScore">Ty 0 b.</div></div>
+      <div class="tools">
+        <button class="ghost icon burger" id="hMenuBtn" type="button" aria-label="Menu" aria-haspopup="dialog"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M4 6.5h16M4 12h16M4 17.5h16" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button>
+      </div>
+    </header>
+    <section class="hseats" id="hSeats" aria-label="Soupeři"></section>
+    <section class="htrick" id="hTrick" aria-label="Štych na stole"></section>
+    <section class="hinfo">
+      <div class="status" role="status" aria-live="polite"><span class="log" id="hLog"></span><span class="say" id="hSay"></span></div>
+    </section>
+    <section class="zmine" aria-label="Tvoje karty">
+      <div class="zphand" id="hPhand"></div>
+    </section>
+  </main>
+</div>
+</div>
+
+<div class="overlay" id="hRules" hidden>
+  <div class="sheet" role="dialog" aria-labelledby="hRulesTitle">
+    <h2 id="hRulesTitle">Jak se hrají herzky</h2>
+    <ul>
+      <li>Hrají čtyři: ty a tři roboti (Kokeš, Martin a Danek). Hraje se s 32 francouzskými kartami od sedmy po eso, každý dostane 8 karet.</li>
+      <li>Kdo má <b>křížovou sedmu</b>, vynáší jako první. Pak se hraje po směru: ty, robot vlevo, robot naproti, robot vpravo.</li>
+      <li>Musíš <b>přiznat barvu</b>: když máš kartu stejné barvy, jakou kdo vynesl, musíš ji dát. Jinak můžeš dát cokoli.</li>
+      <li>Štych bere nejvyšší karta vynesené barvy (eso je nejvyšší). Kdo štych vzal, vynáší další.</li>
+      <li>Trestné body: každé <b>srdce</b> je 1 bod, <b>piková dáma</b> 8 bodů. Body se chceš vyhnout.</li>
+      <li>Srdce se nesmí vynášet, dokud někdo srdce nezahodil (pokud nemáš nic jiného). V prvním štychu se trestné karty nedávají.</li>
+      <li>Rozdává se znovu a znovu, dokud někdo nemá <b>60 bodů</b>. Pak vyhrává ten, kdo má bodů nejméně.</li>
+      <li class="mrule"><b>Peníze:</b> za první místo 40 grošů, za druhé 10. Za třetí místo zaplatíš 10 a za poslední 20 grošů.</li>
+    </ul>
+    <p>Karty, které právě smíš zahrát, jsou povytažené. Zahraješ je klepnutím.</p>
+    <div class="row"><button class="primary" id="hRulesOk" type="button">Rozumím</button></div>
+  </div>
+</div>
+
+<div class="overlay" id="hEnd" hidden>
+  <div class="sheet" role="dialog" aria-labelledby="hEndTitle">
+    <div class="big-emblem" id="hEndEmblem"></div>
+    <h2 id="hEndTitle"></h2>
+    <span class="money" id="hEndMoney"></span>
+    <table class="htab" id="hEndTab"></table>
+    <p id="hEndText"></p>
+    <div class="row" id="hEndRow"><button class="second" id="hEndHome" type="button">Do hospody</button><button class="primary" id="hNext" type="button">Další rozdání</button></div>
+  </div>
+</div>
+
+<div class="screen" id="scrMar" hidden>
+<div class="app">
+  <main class="ztable mtable" id="mTable">
+    <header class="zbar">
+      <div class="wallet"><div class="credit" id="mCredit" aria-label="Kredit">100 grošů</div><div class="score" id="mScore">Mariáš · beta</div></div>
+      <div class="tools">
+        <span class="mtrump" id="mTrump" hidden></span>
+        <button class="ghost icon burger" id="mMenuBtn" type="button" aria-label="Menu" aria-haspopup="dialog"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M4 6.5h16M4 12h16M4 17.5h16" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button>
+      </div>
+    </header>
+    <section class="hseats mseats" id="mSeats" aria-label="Soupeři"></section>
+    <section class="htrick mtrick" id="mTrick" aria-label="Štych na stole"></section>
+    <section class="hinfo minfo">
+      <div class="status" role="status" aria-live="polite"><span class="log" id="mLog"></span><span class="say" id="mSay"></span></div>
+      <div class="zacts" id="mActs"></div>
+    </section>
+    <section class="zmine" aria-label="Tvoje karty">
+      <div class="zphand" id="mPhand"></div>
+    </section>
+  </main>
+</div>
+</div>
+
+<div class="overlay" id="maRules" hidden>
+  <div class="sheet" role="dialog" aria-labelledby="maRulesTitle">
+    <h2 id="maRulesTitle">Jak se hraje mariáš <small class="beta-tag">beta</small></h2>
+    <ul>
+      <li>Hraje se <b>volený mariáš</b> ve třech: ty, Kokeš a Martin. Karty jsou mariášky od sedmy po eso.</li>
+      <li>Každé kolo má jeden hráč roli <b>forhonta</b> (střídá se). Forhont dostane 12 karet, ostatní po 10.</li>
+      <li>Forhont z prvních sedmi karet <b>zvolí trumf</b>, pak vezme zbytek a <b>dvě karty odloží do talonu</b> (eso ani desítku odložit nesmí).</li>
+      <li>Forhont pak zvolí, co hraje: <b>hru</b> s trumfy, <b>betl</b> (nesmí vzít ani jeden štych) nebo <b>durch</b> (musí vzít všechny štychy).</li>
+      <li>Ve štychu musíš <b>přiznat barvu</b> a když můžeš, musíš <b>přebít</b>. Když barvu nemáš, musíš dát <b>trumf</b> (a přebít trumf, je-li to možné).</li>
+      <li>Ve hře se počítají body: každé <b>eso</b> a <b>desítka</b> 10, <b>poslední štych</b> 10. <b>Hláška</b> (král a svršek stejné barvy) 20, v trumfech 40. Hlásí se sama, když zahraješ první z dvojice.</li>
+      <li>Ve hře vyhrává forhont, když má víc bodů než oba obránci dohromady.</li>
+      <li>V betlu a durchu se nehraje s trumfy a desítka je mezi devítkou a spodkem.</li>
+      <li class="mrule"><b>Peníze:</b> forhont hraje proti každému obránci zvlášť. Hra stojí 5 grošů, betl 15, durch 30.</li>
+    </ul>
+    <p><b>Beta:</b> roboti zatím hrají jen hru (betl ani durch sami nevolí) a nepoužívají flek ani sedmu.</p>
+    <div class="row"><button class="primary" id="maRulesOk" type="button">Rozumím</button></div>
+  </div>
+</div>
+
+<div class="overlay" id="mEnd" hidden>
+  <div class="sheet" role="dialog" aria-labelledby="mEndTitle">
+    <div class="big-emblem" id="mEndEmblem"></div>
+    <h2 id="mEndTitle"></h2>
+    <span class="money" id="mEndMoney"></span>
+    <table class="htab" id="mEndTab"></table>
+    <p id="mEndText"></p>
+    <div class="row"><button class="second" id="mEndHome" type="button">Do hospody</button><button class="primary" id="maNext" type="button">Další kolo</button></div>
+  </div>
+</div>
+
 <div class="overlay" id="zRules" hidden>
   <div class="sheet" role="dialog" aria-labelledby="zRulesTitle">
     <h2 id="zRulesTitle">Jak se hrají žolíky</h2>
@@ -871,7 +1101,7 @@ svg .jt{font-family:var(--f-disp);font-weight:700;font-size:13px;letter-spacing:
       <li>Pak vykládáš <b>postupky</b> (aspoň 3 karty stejné barvy po sobě, třeba 5♥ 6♥ 7♥) a <b>skupiny</b> (3 nebo 4 karty stejné hodnoty v různých barvách, třeba K♠ K♥ K♦).</li>
       <li><b>Žolík</b> nahradí jakoukoli kartu. V řadě musí být aspoň dvě obyčejné karty.</li>
       <li>Poprvé se musíš vyložit za <b>aspoň 42 bodů</b> a mezi vyloženými musí být aspoň jedna postupka. Body: eso 10 (v postupce A 2 3 jen 1), obrázky a desítky 10, ostatní podle čísla.</li>
-      <li>Když už jsi vyložená, můžeš <b>přikládat</b> karty ke svým i robotovým řadám. Kartou, kterou žolík v řadě zastupuje, si ho můžeš vyměnit a vzít do ruky.</li>
+      <li>Když už ses vyložil(a), můžeš <b>přikládat</b> karty ke svým i robotovým řadám. Kartou, kterou žolík v řadě zastupuje, si ho můžeš vyměnit a vzít do ruky.</li>
       <li>Tah končí <b>odhozením</b> jedné karty. Vyhrává, kdo se první zbaví všech karet.</li>
       <li class="mrule"><b>Peníze:</b> když vyhraješ, dostaneš 4 groše za každou kartu, která zůstala robotovi. Když prohraješ, zaplatíš 2 groše za každou svou kartu. Kdo se vůbec nevyložil, platí dvojnásob.</li>
     </ul>
@@ -1106,8 +1336,8 @@ const Sound = (() => {
   let vol = store.get("prsi-vol") || {music: 35, sfx: legacy === false ? 0 : 80};
   const sfxLevel = () => Math.pow(vol.sfx/100, 1.5);
   const musicLevel = () => Math.pow(vol.music/100, 2) * 0.55;
-  // při výchozí hudbě (35 %) zní fanfáry stejně nahlas jako dřív se zvuky karet na 80 %
-  const fanLevel = () => vol.music > 0 ? Math.min(1.6, Math.pow(vol.music/35, 1.2) * 0.7) : 0;
+  // fanfáry hrají stejně nahlas jako hudba (změřeno: 0,92 vyrovná hlasitost fanfáry a melodie); hudba se při nich ztlumí
+  const fanLevel = () => musicLevel() * 0.92;
   function ac(){
     if (!ctx){
       try { ctx = new (window.AudioContext || window.webkitAudioContext)(); } catch(e){ return null; }
@@ -1584,7 +1814,7 @@ function play(who, id, chosen){
   if (who==="p"){ pst().turns++; pst().last = {r:c.r, s:c.s}; if (c.r==="V") pst().svrsek = (pst().svrsek||0) + 1; Quests.emit("prsi_play", {r:c.r, s:c.s, prevPen}); }
   const name = cardName(c);
   if (who==="r") S.log = c.r==="V" ? `Robot zahrál ${name} a mění na ${SUITS[chosen].n.toLowerCase()}.` : `Robot zahrál ${name}.`;
-  else S.log = c.r==="V" ? `Zahrála jsi ${name}, měníš na ${SUITS[chosen].n.toLowerCase()}.` : `Zahrála jsi ${name}.`;
+  else S.log = c.r==="V" ? `Zahrál(a) jsi ${name}, měníš na ${SUITS[chosen].n.toLowerCase()}.` : `Zahrál(a) jsi ${name}.`;
   if (!hand.length){
     // soupeř může poslední kartu přebít sedmou; pak si hráč bez karet bere a hraje se dál
     const opp = other(who);
@@ -1605,7 +1835,7 @@ function pass(who){
   if (S.lastChance){
     const w = S.lastChance;
     S.lastChance = null;
-    S.log = who==="p" ? "Nepřebila jsi sedmou, robot vyhrává." : "Robot nepřebil, vyhráváš.";
+    S.log = who==="p" ? "Nepřebil(a) jsi sedmou, robot vyhrává." : "Robot nepřebil, vyhráváš.";
     finish(w);
     return;
   }
@@ -1624,7 +1854,7 @@ function pass(who){
     Sound.draw(n);
     if (who==="p" && n) pst().draws++;
     if (who==="r" && n) Quests.emit("prsi_robot_drew", {n});
-    S.log = who==="r" ? (n ? "Robot si líznul kartu." : "Robot nemá co hrát.") : (n ? "Líznula sis kartu." : "Balíček je prázdný.");
+    S.log = who==="r" ? (n ? "Robot si líznul kartu." : "Robot nemá co hrát.") : (n ? "Líznul(a) sis kartu." : "Balíček je prázdný.");
   }
   if (who==="p"){ pst().turns++; pst().maxHand = Math.max(pst().maxHand || 5, S.p.length); }
   S.anim = null;
@@ -1753,7 +1983,7 @@ function render(){
 
   $("log").textContent = S.log || "";
   let say, act = "Líznout kartu";
-  if (S.over) say = S.over==="p" ? "Vyhrála jsi!" : "Robot vyhrál.";
+  if (S.over) say = S.over==="p" ? "Vyhrál(a) jsi!" : "Robot vyhrál.";
   else if (!mine) say = "Robot přemýšlí…";
   else if (S.lastChance){ say = `Robot zahrál poslední kartu! Přebij ji sedmou a bude si brát ${S.pen + 2} ${kartu(S.pen + 2)}. Jinak vyhraje.`; act = "Nechat robota vyhrát"; }
   else if (S.pen){ say = `Sedma! Přebij sedmou, nebo si vezmi ${S.pen} ${kartu(S.pen)}.`; act = `Vzít ${S.pen} ${kartu(S.pen)}`; }
@@ -1821,7 +2051,7 @@ function showEnd(){
   m.className = "money " + (d >= 0 ? "plus" : "minus");
   const nr = S.r.length, np = S.p.length;
   if (!moneyOn){
-    $("endTitle").textContent = won ? "Vyhrála jsi!" : (S.forfeit ? "Hra vzdána" : "Tentokrát vyhrál robot");
+    $("endTitle").textContent = won ? "Vyhrál(a) jsi!" : (S.forfeit ? "Hra vzdána" : "Tentokrát vyhrál robot");
     $("endText").textContent = won ? `Robotovi ${zust(nr)} ${nr} ${karta(nr)}. Skóre je ${score.p} : ${score.r}.` : `Tobě ${zust(np)} ${np} ${karta(np)}. Skóre je ${score.p} : ${score.r}.`;
     $("again").textContent = "Hrát znovu";
   } else if (credit <= 0){
@@ -1829,7 +2059,7 @@ function showEnd(){
     $("endText").textContent = `Zůstalo ti ${np} ${karet(np)} a měšec je prázdný. ` + brokeNote();
     $("again").textContent = "Hrát na sekeru (+100 grošů)";
   } else {
-    $("endTitle").textContent = won ? "Vyhrála jsi!" : (S.forfeit ? "Hra vzdána" : "Tentokrát vyhrál robot");
+    $("endTitle").textContent = won ? "Vyhrál(a) jsi!" : (S.forfeit ? "Hra vzdána" : "Tentokrát vyhrál robot");
     $("endText").textContent = won
       ? `Robotovi ${zust(nr)} ${nr} ${karta(nr)}, za každou 10 grošů. V měšci máš ${gr(credit)}.` + repaidNote(S.repaid || 0)
       : `Tobě ${zust(np)} ${np} ${karta(np)}, za každou 5 grošů. V měšci máš ${gr(credit)}.`;
@@ -2000,6 +2230,8 @@ function applyMoney(on){
     else if (screen === "prsi" && S) render();
     else if (screen === "zol" && Z) zRender();
     else if (screen === "kostky" && K) kRender();
+    else if (screen === "herzky" && H) hRender();
+    else if (screen === "marias" && M) mRender();
   } catch(_) {}
 }
 $("mMoney").onclick = () => applyMoney(!moneyOn);
@@ -2021,6 +2253,8 @@ function openMenu(){
   if (screen === "prsi") $("mForfeit").disabled = !S || !!S.over;
   if (screen === "zol") $("mForfeit").disabled = !Z || !!Z.over || Z.turn !== "p";
   if (screen === "kostky") $("mForfeit").disabled = !K || !!K.over;
+  if (screen === "herzky") $("mForfeit").disabled = !H || H.phase === "over";
+  if (screen === "marias") $("mForfeit").disabled = !M || M.phase === "roundEnd";
   paintVol();
   openSheet("menu");
 }
@@ -2032,7 +2266,7 @@ $("volSfx").addEventListener("input", e => { Sound.setVol("sfx", +e.target.value
 $("volSfx").addEventListener("change", () => Sound.card());
 $("mNext").onclick = () => { Sound.next(); paintVol(); };
 $("mHome").onclick = () => go("hub");
-$("mRules").onclick = () => { closeSheet("menu"); openSheet(screen === "zol" ? "zRules" : screen === "kostky" ? "kRules" : "rules"); };
+$("mRules").onclick = () => { closeSheet("menu"); openSheet(screen === "zol" ? "zRules" : screen === "kostky" ? "kRules" : screen === "herzky" ? "hRules" : screen === "marias" ? "maRules" : "rules"); };
 $("mForfeit").onclick = () => {
   closeSheet("menu");
   if (screen === "prsi"){
@@ -2043,21 +2277,41 @@ $("mForfeit").onclick = () => {
   } else if (screen === "zol"){
     if (!Z || Z.over) return;
     const n = Z.p.length + zStaged().reduce((a, m) => a + m.cards.length, 0), m = Z.laid.p ? 1 : 2;
-    $("newText").textContent = !moneyOn ? "Vzdaná hra se počítá jako prohra." : `Vzdaná hra se počítá jako prohra: zaplatíš ${gr(2*n*m)} za ${n} ${kartu(n)} v ruce${m === 2 ? " (dvojnásob, protože ses ještě nevyložila)" : ""}.`;
+    $("newText").textContent = !moneyOn ? "Vzdaná hra se počítá jako prohra." : `Vzdaná hra se počítá jako prohra: zaplatíš ${gr(2*n*m)} za ${n} ${kartu(n)} v ruce${m === 2 ? " (dvojnásob, protože ses ještě nevyložil(a))" : ""}.`;
     openSheet("confirmNew");
   } else if (screen === "kostky"){
     if (!K || K.over) return;
     $("newText").textContent = moneyOn ? `Vzdaná hra se počítá jako prohra: zaplatíš ${gr(KLOSE)}.` : "Vzdaná hra se počítá jako prohra.";
     openSheet("confirmNew");
+  } else if (screen === "marias"){
+    if (!M || M.phase === "roundEnd") return;
+    $("newText").textContent = "Vzdané kolo se počítá jako prohra" + (moneyOn ? ` (${gr(M_GAMES[M.game || "hra"].v * (M.F === 0 ? 2 : 1))}).` : ".");
+    openSheet("confirmNew");
+  } else if (screen === "herzky"){
+    if (!H || H.phase === "over") return;
+    $("newText").textContent = "Vzdaná hra se počítá jako poslední místo" + (moneyOn ? `: zaplatíš ${gr(-H_MONEY[3])}.` : ".");
+    openSheet("confirmNew");
   }
 };
 addEventListener("keydown", e => {
   if (e.key !== "Escape") return;
-  ["menu","rules","zRules","kRules","confirmNew","sekera"].forEach(id => { if (!$(id).hidden) closeSheet(id); });
+  ["menu","rules","zRules","kRules","hRules","maRules","confirmNew","sekera"].forEach(id => { if (!$(id).hidden) closeSheet(id); });
 });
 $("newNo").onclick = () => closeSheet("confirmNew");
 $("newYes").onclick = () => {
   closeSheet("confirmNew");
+  if (screen === "marias"){
+    if (!M || M.phase === "roundEnd") return;
+    clearTimeout(mTimer); mTimer = null;
+    mRoundEnd(false, true);
+    return;
+  }
+  if (screen === "herzky"){
+    if (!H || H.phase === "over") return;
+    clearTimeout(hTimer); hTimer = null;
+    hFinish(true);
+    return;
+  }
   if (screen === "kostky"){
     if (!K || K.over) return;
     clearTimeout(kTimer); kTimer = null;
@@ -2081,11 +2335,11 @@ $("newYes").onclick = () => {
 };
 $("again").onclick = startNew;
 $("endHome").onclick = () => go("hub");
-addEventListener("resize", () => { layout(); zLayout(); });
+addEventListener("resize", () => { layout(); zLayout(); hLayout(); mLayout(); });
 addEventListener("orientationchange", () => { [0, 250, 600].forEach(t => setTimeout(() => { layout(); zLayout(); }, t)); });
 try {
-  const ro = new ResizeObserver(() => requestAnimationFrame(() => { layout(); zLayout(); }));
-  ["table", "say", "log", "act", "zTable"].forEach(id => ro.observe($(id)));
+  const ro = new ResizeObserver(() => requestAnimationFrame(() => { layout(); zLayout(); hLayout(); mLayout(); }));
+  ["table", "say", "log", "act", "zTable", "hTable", "mTable"].forEach(id => ro.observe($(id)));
 } catch(e) {}
 try { document.fonts && document.fonts.ready.then(() => { layout(); zLayout(); }); } catch(e) {}
 addEventListener("load", () => { layout(); zLayout(); });
@@ -2116,7 +2370,7 @@ const FRK = ["A","2","3","4","5","6","7","8","9","10","J","Q","K"];
 const FRN = {A:["eso","n"], "2":["dvojka","f"], "3":["trojka","f"], "4":["čtyřka","f"], "5":["pětka","f"], "6":["šestka","f"],
   "7":["sedmička","f"], "8":["osmička","f"], "9":["devítka","f"], "10":["desítka","f"], J:["kluk","m"], Q:["dáma","f"], K:["král","m"]};
 const zName = c => c.j ? "žolík" : FSU[c.s].adj + END[FRN[c.r][1]] + " " + FRN[c.r][0];
-// 4. pád: „líznula sis srdcovou dámu / křížového krále / pikové eso“
+// 4. pád: „líznul(a) sis srdcovou dámu / křížového krále / pikové eso“
 function zAcc(c){
   if (c.j) return "žolíka";
   const [noun, g] = FRN[c.r], adj = FSU[c.s].adj;
@@ -2332,7 +2586,7 @@ function zCheckStage(){
     Z.laid.p = true;
     st.forEach(m => zEmitMeld("zol_meld", m));
     Quests.emit("zol_first", {pts:i.pts, round:zRound()});
-    Z.log = `Vyložila ses za ${i.pts} bodů! Teď můžeš přikládat i k robotovým řadám.`;
+    Z.log = `Vyložil(a) ses za ${i.pts} bodů! Teď můžeš přikládat i k robotovým řadám.`;
   }
 }
 function zEmitMeld(nm, m){
@@ -2359,12 +2613,12 @@ function zFlash(msg, ids){
 /* ---------- tahy hráče ---------- */
 function zOnDeck(){
   if (!zMine()) return;
-  if (Z.phase !== "draw") return zFlash("Už sis v tomhle tahu kartu vzala. Vylož karty, nebo jednu odhoď.");
+  if (Z.phase !== "draw") return zFlash("Už sis v tomhle tahu kartu vzal(a). Vylož karty, nebo jednu odhoď.");
   const c = zDrawDeck("p");
   if (!c){ Z.log = "Balíček i odhozené karty jsou prázdné."; Z.phase = "play"; return zCommit(); }
   Sound.draw(1); buzz(15);
   Z.phase = "play";
-  Z.log = `Líznula sis ${zAcc(c)}.`;
+  Z.log = `Líznul(a) sis ${zAcc(c)}.`;
   zCommit();
 }
 function zOnPile(){
@@ -2380,7 +2634,7 @@ function zOnPile(){
   Z.taken = c.id; Z.phase = "play";
   zSel.clear(); zSel.add(c.id);
   Sound.draw(1); buzz(15);
-  Z.log = `Vzala sis ${zAcc(c)} z odhozených. V tomhle tahu ji musíš vyložit.`;
+  Z.log = `Vzal(a) sis ${zAcc(c)} z odhozených. V tomhle tahu ji musíš vyložit.`;
   zCommit();
 }
 function zToggle(id){
@@ -2403,7 +2657,7 @@ function zLay(){
   Z.melds.push(m); Z.hl = [m.id];
   zSel.clear();
   Sound.card(); buzz(15);
-  Z.log = `Vyložila jsi ${a.type === "run" ? "postupku" : "skupinu"} za ${a.pts} bodů.`;
+  Z.log = `Vyložil(a) jsi ${a.type === "run" ? "postupku" : "skupinu"} za ${a.pts} bodů.`;
   if (wasLaid) zEmitMeld("zol_meld", m);
   zCheckStage();
   if (zAfterMove()) return;
@@ -2417,7 +2671,7 @@ function zOnMeld(mid){
   if (!zCanLay()) return zFlash(`Přikládat se smí až od ${LAY_FROM}. kola.`);
   const cards = zSelCards();
   if (!cards.length) return zFlash("Nejdřív vyber v ruce kartu, kterou chceš k téhle řadě přiložit.");
-  if (!m.st && !Z.laid.p) return zFlash(`K řadám na stole můžeš přikládat, až se sama vyložíš (aspoň ${FIRST} bodů a jedna postupka).`);
+  if (!m.st && !Z.laid.p) return zFlash(`K řadám na stole můžeš přikládat, až se vyložíš (aspoň ${FIRST} bodů a jedna postupka).`);
   if (cards.length === 1 && !m.st){
     const sw = zSwapJoker(m, cards[0]);
     if (sw){
@@ -2426,7 +2680,7 @@ function zOnMeld(mid){
       Z.hl = [m.id];
       zSel.clear(); zSel.add(sw.joker.id);
       Sound.card(); buzz(15);
-      Z.log = `Vyměnila jsi žolíka za ${zAcc(cards[0])}. Žolík je teď v tvé ruce.`;
+      Z.log = `Vyměnil(a) jsi žolíka za ${zAcc(cards[0])}. Žolík je teď v tvé ruce.`;
       Quests.emit("zol_swap", {});
       return zCommit();
     }
@@ -2439,7 +2693,7 @@ function zOnMeld(mid){
   Z.hl = [m.id];
   zSel.clear();
   Sound.card(); buzz(15);
-  Z.log = `Přiložila jsi ${cards.map(zShort).join(", ")}.`;
+  Z.log = `Přiložil(a) jsi ${cards.map(zShort).join(", ")}.`;
   if (m.st) zCheckStage();
   if (zAfterMove()) return;
   zCommit();
@@ -2464,7 +2718,7 @@ function zDiscard(){
   Z.pile.push(c); Z.anim = {id:c.id, from:"p"};
   zSel.clear();
   Sound.card(); buzz(15);
-  Z.log = `Odhodila jsi ${zAcc(c)}.`;
+  Z.log = `Odhodil(a) jsi ${zAcc(c)}.`;
   Z.lastDisc = true;
   if (Z.taken) Quests.emit("zol_took_used", {});
   if (!Z.p.length) return zFinish("p");
@@ -2477,7 +2731,7 @@ function zReturnTaken(){
   Z.taken = null; Z.phase = "draw";
   zSel.delete(c.id);
   Sound.card();
-  Z.log = "Vrátila jsi kartu zpátky na odhozené.";
+  Z.log = "Vrátil(a) jsi kartu zpátky na odhozené.";
   zCommit();
 }
 function zUndoClick(){
@@ -2724,7 +2978,7 @@ function zMeldHTML(m, sel, play){
   return `<button type="button" class="meld${m.st ? " st" : ""}${can ? " can" : ""}${(Z.hl || []).includes(m.id) ? " hl" : ""}" data-mid="${m.id}" aria-label="${label}">${cards}${pts}</button>`;
 }
 function zSayText(sel){
-  if (Z.over) return Z.over === "p" ? "Vyhrála jsi!" : "Robot vyhrál.";
+  if (Z.over) return Z.over === "p" ? "Vyhrál(a) jsi!" : "Robot vyhrál.";
   if (Z.turn !== "p") return "Robot přemýšlí…";
   const early = !zCanLay(), rd = zRound();
   if (Z.phase === "draw") return early ? `Jsi na řadě (${rd}. kolo). Lízni si kartu z balíčku.` : "Jsi na řadě. Lízni si z balíčku, nebo si vezmi horní odhozenou kartu.";
@@ -2761,7 +3015,7 @@ function zRender(){
   const zone = (title, list, empty) => `<div class="zone"><h3>${title}</h3>` +
     (list.length ? `<div class="zmelds">${list.map(m => zMeldHTML(m, sel, play)).join("")}</div>` : `<p class="zempty">${empty}</p>`) + `</div>`;
   $("zBoard").innerHTML = zone("Robot vyložil", rm, "Robot zatím nic nevyložil.") +
-    zone(Z.laid.p ? "Ty jsi vyložila" : "Tvoje řady", pm, zCanLay() ? `Tady budou tvoje řady. Poprvé aspoň ${FIRST} bodů a jedna postupka.` : `Vykládat se smí od ${LAY_FROM}. kola. Zatím jen lízej a odhazuj.`);
+    zone(Z.laid.p ? "Ty jsi vyložil(a)" : "Tvoje řady", pm, zCanLay() ? `Tady budou tvoje řady. Poprvé aspoň ${FIRST} bodů a jedna postupka.` : `Vykládat se smí od ${LAY_FROM}. kola. Zatím jen lízej a odhazuj.`);
 
   const dn = Z.deck.length, layers = Math.min(3, dn);
   const deck = $("zDeck");
@@ -2853,7 +3107,7 @@ function zShowEnd(){
   m.className = "money " + (d >= 0 ? "plus" : "minus");
   const n = Z.left || 0, dbl = Z.mult === 2;
   if (!moneyOn){
-    $("zEndTitle").textContent = won ? "Vyhrála jsi!" : (Z.forfeit ? "Hra vzdána" : "Tentokrát vyhrál robot");
+    $("zEndTitle").textContent = won ? "Vyhrál(a) jsi!" : (Z.forfeit ? "Hra vzdána" : "Tentokrát vyhrál robot");
     $("zEndText").textContent = `${won ? "Robotovi" : "Tobě"} ${zust(n)} ${n} ${karta(n)}. Skóre je ${zscore.p} : ${zscore.r}.`;
     $("zAgain").textContent = "Hrát znovu";
   } else if (credit <= 0){
@@ -2861,10 +3115,10 @@ function zShowEnd(){
     $("zEndText").textContent = "Měšec je prázdný. " + brokeNote();
     $("zAgain").textContent = "Hrát na sekeru (+100 grošů)";
   } else {
-    $("zEndTitle").textContent = won ? "Vyhrála jsi!" : (Z.forfeit ? "Hra vzdána" : "Tentokrát vyhrál robot");
+    $("zEndTitle").textContent = won ? "Vyhrál(a) jsi!" : (Z.forfeit ? "Hra vzdána" : "Tentokrát vyhrál robot");
     $("zEndText").textContent = won
       ? `Robotovi ${zust(n)} ${n} ${karta(n)}, za každou 4 groše${dbl ? ". Robot se vůbec nevyložil, takže platí dvojnásob" : ""}. V měšci máš ${gr(credit)}.` + repaidNote(Z.repaid || 0)
-      : `Tobě ${zust(n)} ${n} ${karta(n)}, za každou 2 groše${dbl ? ". Nevyložila ses, takže platíš dvojnásob" : ""}. V měšci máš ${gr(credit)}.`;
+      : `Tobě ${zust(n)} ${n} ${karta(n)}, za každou 2 groše${dbl ? ". Nevyložil(a) ses, takže platíš dvojnásob" : ""}. V měšci máš ${gr(credit)}.`;
     $("zAgain").textContent = "Hrát znovu";
   }
   $("zEndText").textContent += xpNote(Z.xp || 0);
@@ -2962,10 +3216,81 @@ let K = null, kwins = {p:0, r:0}, kTimer = null, kShownCredit = null;
 const kSel = new Set();
 let kTargetPref = [3000, 5000, 10000].includes(store.get("kostky-target")) ? store.get("kostky-target") : 10000;
 
+/* ---------- soupeři v kostkách ---------- */
+const KOPP = {
+  danek:  {n:"Danek",  dat:"Dankovi",  ins:"Dankem",  lv:"Snadný", col:"#3f7a4c", key:"D",
+           ds:"Je z věřící rodiny, je nepolíbený hazardem a nerad riskuje peníze, neboť by se na něj máma zlobila."},
+  martin: {n:"Martin", dat:"Martinovi", ins:"Martinem", lv:"Střední", col:"#c48a1c", key:"M",
+           ds:"Ve dne učitel zpěvu a operní zpěvák, po nocích obírá v kostkách lidi v celém okolí. Výhru ti jen tak nedaruje."},
+  kokes:  {n:"Kokeš",  dat:"Kokešovi", ins:"Kokešem", lv:"Těžký", col:"#b8261f", key:"K",
+           ds:"Majitel obchodu se zvířecími pamlsky nemá s penězi starost. Jediná jeho zábava je porazit každého, kdo se opováží ho vyzvat v kostkách."}
+};
+const KOKES_QUIT = 3000;
+let kOpp = null, kPicking = false, kOW = store.get("kostky-opp-wins") || {};
+const on = () => KOPP[(K && K.opp) || kOpp || "martin"];
+function kBestBy(w){
+  const n = K.dice.length; let best = null, bv = -Infinity;
+  for (let m = 1; m < (1 << n); m++){
+    const idx = []; for (let i = 0; i < n; i++) if (m & (1 << i)) idx.push(i);
+    const sc = kScore(idx.map(i => K.dice[i].v)); if (sc <= 0) continue;
+    const v = w(sc, n - idx.length); if (v > bv){ bv = v; best = idx; }
+  }
+  return best;
+}
+// Danek bere vždy nejvíc bodů a brzy zapisuje; Martin je původní robot; Kokeš drží víc kostek a riskuje podle stavu hry
+function kChoose(){
+  const o = K.opp || "martin";
+  if (o === "danek") return kBestBy(sc => sc);
+  if (o === "kokes") return kBestBy((sc, left) => left === 0 ? sc + 1200 : sc + 80 * left);
+  return kRobotChoose();
+}
+function kBanks(total, left){
+  const o = K.opp || "martin";
+  if (o === "martin") return kRobotBanks(total, left);
+  if (K.s.r + total >= K.target) return true;
+  if (o === "danek") return left > 0 && (total >= 250 || left <= 3);
+  if (left === 0) return false;
+  let f = 1;
+  if (K.s.p >= K.target - 2000) f = 2.2;
+  else if (K.s.r - K.s.p > 2500) f = 0.75;
+  return total >= [0, 250, 300, 400, 600, 1000, 2500][left] * f;
+}
+function kOppRender(){
+  const cont = K && !K.over && K.opp && (K.s.p || K.s.r || K.tp || K.dice.length);
+  $("kOpps").innerHTML = (cont ? `<button type="button" class="opp cont" data-opp="__cont"><b>Pokračovat v rozehrané hře s ${KOPP[K.opp].ins}</b><span class="rec">${fmt(K.s.p)} : ${fmt(K.s.r)}</span></button>` : "") +
+    Object.entries(KOPP).map(([k, o]) => { const r = kOW[k] || {p:0, r:0};
+      return `<button type="button" class="opp" data-opp="${k}"><span class="av" style="background:${o.col}" aria-hidden="true">${o.key}</span>
+        <span class="on"><b>${o.n}</b><span class="lv" style="background:${o.col}">${o.lv}</span>${r.p + r.r ? `<span class="rec">ty ${r.p} : ${r.r} ${o.n}</span>` : ""}</span>
+        <span class="ds">${o.ds}</span></button>`; }).join("");
+}
+function kOpenPick(){ kPicking = true; clearTimeout(kTimer); kTimer = null; kOppRender(); openSheet("kPick"); }
+$("kOpps").addEventListener("click", e => {
+  const b = e.target.closest(".opp[data-opp]"); if (!b) return;
+  buzz(15);
+  closeSheet("kPick"); kPicking = false;
+  if (b.dataset.opp !== "__cont"){
+    kOpp = b.dataset.opp;
+    clearTimeout(kTimer); kTimer = null;
+    kNewGame(K ? K.nextStarter : "p");
+    Sound.deal();
+  } else kOpp = K.opp;
+  kCommit();
+  if (!store.get("kostky-seen-rules")){ openSheet("kRules"); store.set("kostky-seen-rules", true); }
+});
+$("kPickHome").onclick = () => { kPicking = false; go("hub"); };
+// Kokeš to nevydrží: 3000 a víc v jednom tahu a hru vzdá
+function kKokesCheck(){
+  if ((K.opp || "martin") !== "kokes" || K.turn !== "p" || K.tp < KOKES_QUIT) return false;
+  K.kokesQuit = true;
+  K.log = `Kokeš praští kelímkem o stůl a odchází.`;
+  kFinish("p");
+  return true;
+}
+
 function kNewGame(starter){
-  K = {s:{p:0, r:0}, turn:starter, phase:"roll", n:6, dice:[], keep:[], tp:0, over:null,
+  K = {opp: kOpp || "martin", s:{p:0, r:0}, turn:starter, phase:"roll", n:6, dice:[], keep:[], tp:0, over:null,
        target:kTargetPref, nextStarter:other(starter), rsel:null, rolled:0, trolls:0, st:{busts:0, maxBehind:0, turns:0},
-       log: starter === "p" ? "Nová hra. Začínáš ty." : "Nová hra. Začíná robot."};
+       log: starter === "p" ? `Nová hra s ${KOPP[kOpp || "martin"].ins}. Začínáš ty.` : `Nová hra. Začíná ${KOPP[kOpp || "martin"].n}.`};
   kSel.clear();
 }
 const kMine = () => K && !K.over && K.turn === "p";
@@ -3005,13 +3330,13 @@ function kRollDice(){
   if (!kHasScore(vals)){
     K.phase = "bust";
     if (K.turn === "p") kst().busts++;
-    const who = K.turn === "p" ? "Smůla, nepadla žádná kombinace." : "Robotovi nepadla žádná kombinace.";
+    const who = K.turn === "p" ? "Smůla, nepadla žádná kombinace." : `${on().dat} nepadla žádná kombinace.`;
     K.log = who + (K.tp ? ` Body za kolo (${fmt(K.tp)}) propadají.` : "");
     if (K.trolls === 1){
       // nic hned v prvním hodu tahu: trest 1 000 bodů (níž než na nulu se nejde)
       const pen = Math.min(1000, K.s[K.turn]);
       K.s[K.turn] -= pen;
-      if (pen) K.log += ` Nic hned v prvním hodu: ${K.turn === "p" ? "odečítá se ti" : "robotovi se odečítá"} ${fmt(pen)} bodů.`;
+      if (pen) K.log += ` Nic hned v prvním hodu: ${K.turn === "p" ? "odečítá se ti" : on().dat + " se odečítá"} ${fmt(pen)} bodů.`;
     }
     K.tp = 0;
   } else K.phase = "pick";
@@ -3038,8 +3363,9 @@ function kRoll(){
   if (!idx.length) return kFlash("Nejdřív klepnutím vyber kostky, které chceš odložit.");
   if (sc <= 0) return kFlash("Vybrané kostky netvoří kombinaci. Boduje jednička, pětka, trojice a postupka.");
   kTakeAndRoll(idx);
+  if (kKokesCheck()) return;
   if (K.hot) Quests.emit("k_hot", {});
-  K.log = `Odložila sis ${fmt(sc)} ${bodu(sc)}.` + (K.hot ? " Všechny kostky bodovaly, házíš znovu všemi šesti!" : "");
+  K.log = `Odložil(a) sis ${fmt(sc)} ${bodu(sc)}.` + (K.hot ? " Všechny kostky bodovaly, házíš znovu všemi šesti!" : "");
   kRollDice();
   kCommit();
 }
@@ -3048,11 +3374,12 @@ function kBank(){
   const idx = [...kSel], sc = kScore(kSelVals());
   if (!idx.length || sc <= 0) return kFlash("Než si body zapíšeš, odlož kostky, které bodují.");
   kTakeAndRoll(idx);
+  if (kKokesCheck()) return;
   const tot = K.tp;
   K.s.p += tot;
   Sound.card();
   Quests.emit("k_bank", {pts:tot, rolls:K.trolls || 1});
-  K.log = `Zapsala sis ${fmt(tot)} ${bodu(tot)}.`;
+  K.log = `Zapsal(a) sis ${fmt(tot)} ${bodu(tot)}.`;
   if (K.s.p >= K.target) return kFinish("p");
   kNextTurn();
 }
@@ -3075,6 +3402,7 @@ function kNextTurn(){
 function kFinish(who){
   K.over = who;
   kwins[who]++;
+  const oo = K.opp || "martin"; kOW[oo] = kOW[oo] || {p:0, r:0}; kOW[oo][who]++; store.set("kostky-opp-wins", kOW);
   K.delta = who === "p" ? KWIN : -KLOSE;
   K.repaid = pay(K.delta);
   K.xp = who === "p" ? addXP(XP_WIN.kostky) : 0;
@@ -3111,32 +3439,32 @@ function kRobotStep(){
   if (!K || K.over || K.turn !== "r" || screen !== "kostky") return;
   if (K.phase === "bust") return kNextTurn();
   if (K.phase === "roll"){
-    K.log = `Robot hází ${K.n} ${K.n === 1 ? "kostkou" : "kostkami"}.`;
+    K.log = `${on().n} hází ${K.n} ${K.n === 1 ? "kostkou" : "kostkami"}.`;
     kRollDice();
     return kCommit();
   }
   if (K.phase === "pick" && !K.rsel){
-    K.rsel = kRobotChoose();
+    K.rsel = kChoose();
     return kCommit();
   }
   const idx = K.rsel, sc = kScore(idx.map(i => K.dice[i].v));
   K.rsel = null;
   const left = K.dice.length - idx.length;
-  if (kRobotBanks(K.tp + sc, left)){
+  if (kBanks(K.tp + sc, left)){
     kTakeAndRoll(idx);
     K.s.r += K.tp;
-    K.log = `Robot si zapsal ${fmt(K.tp)} ${bodu(K.tp)}.`;
+    K.log = `${on().n} si zapsal ${fmt(K.tp)} ${bodu(K.tp)}.`;
     Sound.card();
     if (K.s.r >= K.target) return kFinish("r");
     return kNextTurn();
   }
   kTakeAndRoll(idx);
-  K.log = `Robot si odložil ${fmt(sc)} a hází dál` + (K.hot ? " všemi šesti." : ".");
+  K.log = `${on().n} si odložil ${fmt(sc)} a hází dál` + (K.hot ? " všemi šesti." : ".");
   kRollDice();
   kCommit();
 }
 function kSchedule(){
-  if (kTimer || !K || K.over || screen !== "kostky") return;
+  if (kTimer || !K || K.over || screen !== "kostky" || kPicking) return;
   if (K.phase === "bust") kTimer = setTimeout(kRobotStepOrPass, 2300);
   else if (K.turn === "r") kTimer = setTimeout(kRobotStep, K.phase === "pick" && !K.rsel ? 1100 : 1000);
 }
@@ -3162,7 +3490,9 @@ function kRender(){
   cr.classList.toggle("low", credit < 30);
   if (kShownCredit !== null && kShownCredit !== credit){ cr.classList.remove("bump"); void cr.offsetWidth; cr.classList.add("bump"); }
   kShownCredit = credit;
-  $("kWins").textContent = `Ty ${kwins.p} : ${kwins.r} Robot · do ${fmt(K.target)}`;
+  const ow = kOW[K.opp || "martin"] || {p:0, r:0};
+  $("kWins").textContent = `Ty ${ow.p} : ${ow.r} ${on().n} · do ${fmt(K.target)}`;
+  $("kPlateR").querySelector(".pn").textContent = on().n;
   $("kPtsP").textContent = fmt(K.s.p); $("kPtsR").textContent = fmt(K.s.r);
   $("kBarP").style.width = Math.min(100, K.s.p / K.target * 100) + "%";
   $("kBarR").style.width = Math.min(100, K.s.r / K.target * 100) + "%";
@@ -3171,7 +3501,7 @@ function kRender(){
 
   $("kKeep").innerHTML = K.keep.map(g => `<span class="kgrp">${g.map(v => `<span class="mini">${dieFace(v)}</span>`).join("")}</span>`).join("");
   $("kTp").textContent = fmt(K.tp);
-  $("kKeepLbl").innerHTML = K.turn === "p" ? "Odloženo<br>v kole" : "Robot<br>odložil";
+  $("kKeepLbl").innerHTML = K.turn === "p" ? "Odloženo<br>v kole" : `${on().n}<br>odložil`;
 
   const tray = $("kTray"), W = tray.clientWidth, H = tray.clientHeight, cup = $("kCup");
   const cx = cup.offsetLeft + cup.offsetWidth / 2, cy = cup.offsetTop + cup.offsetHeight * .3;
@@ -3188,7 +3518,7 @@ function kRender(){
   cup.disabled = !mine || !(K.phase === "roll" || K.phase === "pick");
   cup.classList.toggle("ready", canCup);
   $("kCupLbl").textContent = mine && (K.phase === "roll" || K.phase === "pick") ? "klepni" : "";
-  $("kHint").textContent = !K.dice.length ? (K.turn === "p" ? `Hoď ${K.n === 6 ? "všemi šesti kostkami" : K.n + " kostkami"}: klepni na kelímek.` : "Na řadě je robot.") : "";
+  $("kHint").textContent = !K.dice.length ? (K.turn === "p" ? `Hoď ${K.n === 6 ? "všemi šesti kostkami" : K.n + " kostkami"}: klepni na kelímek.` : `Na řadě je ${on().n}.`) : "";
 
   $("kLog").textContent = K.log || "";
   const say = $("kSay");
@@ -3210,9 +3540,9 @@ function kRender(){
 }
 let kAnimLock = false;
 function kSayText(){
-  if (K.over) return K.over === "p" ? "Vyhrála jsi!" : "Robot vyhrál.";
-  if (K.phase === "bust") return K.turn === "p" ? "Pokračuje robot…" : "Za chvíli jsi na řadě ty.";
-  if (K.turn !== "p") return "Robot hraje…";
+  if (K.over) return K.over === "p" ? "Vyhrál(a) jsi!" : `${on().n} vyhrál.`;
+  if (K.phase === "bust") return K.turn === "p" ? `Pokračuje ${on().n}…` : "Za chvíli jsi na řadě ty.";
+  if (K.turn !== "p") return `${on().n} hraje…`;
   if (K.phase === "roll") return K.tp ? `Máš rozehráno ${fmt(K.tp)} ${bodu(K.tp)}. Hoď znovu.` : "Jsi na řadě. Hoď kostkami.";
   const vals = kSelVals();
   if (!vals.length) return "Klepnutím vyber kostky, které bodují: jedničky, pětky, trojice nebo postupku.";
@@ -3226,8 +3556,9 @@ function kShowEnd(){
   const m = $("kEndMoney");
   m.textContent = (K.delta >= 0 ? "+" : "−") + gr(Math.abs(K.delta));
   m.className = "money " + (K.delta >= 0 ? "plus" : "minus");
+  const lostTo = `Tentokrát vyhrál ${on().n}`;
   if (!moneyOn){
-    $("kEndTitle").textContent = won ? "Vyhrála jsi!" : (K.forfeit ? "Hra vzdána" : "Tentokrát vyhrál robot");
+    $("kEndTitle").textContent = won ? "Vyhrál(a) jsi!" : (K.forfeit ? "Hra vzdána" : lostTo);
     $("kEndText").textContent = `Konečný stav ${fmt(K.s.p)} : ${fmt(K.s.r)}. Vítězství ${kwins.p} : ${kwins.r}.`;
     $("kAgain").textContent = "Hrát znovu";
   } else if (credit <= 0){
@@ -3235,11 +3566,13 @@ function kShowEnd(){
     $("kEndText").textContent = "Měšec je prázdný. " + brokeNote();
     $("kAgain").textContent = "Hrát na sekeru (+100 grošů)";
   } else {
-    $("kEndTitle").textContent = won ? "Vyhrála jsi!" : (K.forfeit ? "Hra vzdána" : "Tentokrát vyhrál robot");
+    $("kEndTitle").textContent = won ? "Vyhrál(a) jsi!" : (K.forfeit ? "Hra vzdána" : lostTo);
     $("kEndText").textContent = `Konečný stav ${fmt(K.s.p)} : ${fmt(K.s.r)}. V měšci máš ${gr(credit)}.` + repaidNote(K.repaid || 0);
     $("kAgain").textContent = "Hrát znovu";
   }
   $("kEndText").textContent += xpNote(K.xp || 0);
+  $("kQuote").hidden = !K.kokesQuit;
+  if (K.kokesQuit){ $("kEndTitle").textContent = "Kokeš hru vzdal!"; $("kQuote").textContent = "„Si děláš prdel, máš cinknuté kostky, s tebou nehraju.“"; $("kEndText").textContent = `Hodil(a) jsi ${fmt(K.tp)} bodů v jednom tahu a Kokeš to nevydržel. Výhra je tvoje.` + (moneyOn ? ` V měšci máš ${gr(credit)}.` + repaidNote(K.repaid || 0) : "") + xpNote(K.xp || 0); }
   openSheet("kEnd");
 }
 function kStartNew(){
@@ -3256,10 +3589,10 @@ function kEnter(){
     if (saved && saved.s && !saved.over){ K = saved; K.anim = false; K.rsel = null; }
     else kNewGame(saved && saved.nextStarter ? saved.nextStarter : "p");
   }
-  if (K.over) return kStartNew();
+  if (K.over){ kOpp = K.opp || kOpp; kNewGame(K.nextStarter || "p"); }
   kSel.clear();
-  requestAnimationFrame(() => kCommit());
-  if (!store.get("kostky-seen-rules")){ openSheet("kRules"); store.set("kostky-seen-rules", true); }
+  kOpenPick();
+  requestAnimationFrame(() => kRender());
 }
 
 /* ---------- kelímek: hází se klepnutím ---------- */
@@ -3304,12 +3637,12 @@ $("kScoreTable").innerHTML = [
 addEventListener("resize", () => { if (K && screen === "kostky") kRender(); });
 
 /* ---------- reputace a úrovně ---------- */
-const XP_WIN = {prsi:20, zol:40, kostky:30};
+const XP_WIN = {prsi:20, zol:40, kostky:30, herzky:40};
 let xp = Math.max(0, +store.get("xp") || 0);
 const MAX_LEVEL = 100;
 const xpNeed = L => 100 + 50 * (L - 1);           // z úrovně L na L+1: 100, 150, 200, 250…
 function levelOf(x){ let L = 1, rest = x; while (L < MAX_LEVEL && rest >= xpNeed(L)){ rest -= xpNeed(L); L++; } return {L, rest, need: xpNeed(L), max: L >= MAX_LEVEL}; }
-const TITLES = [[1, "Nováček"], [3, "Host"], [5, "Štamgast"], [8, "Kartářka"], [12, "Mistryně stolu"], [16, "Postrach robotů"], [20, "Hvězda výčepu"], [30, "Velmistryně karet"], [45, "Pýcha hospody"], [60, "Legenda hospody"], [80, "Živoucí pověst"], [100, "Královna hospody"]];
+const TITLES = [[1, "Nováček"], [3, "Host"], [5, "Štamgast"], [8, "Karetní eso"], [12, "Postrach stolu"], [16, "Postrach robotů"], [20, "Hvězda výčepu"], [30, "Velmistr(yně) karet"], [45, "Pýcha hospody"], [60, "Legenda hospody"], [80, "Živoucí pověst"], [100, "Král(ovna) hospody"]];
 const titleOf = L => TITLES.filter(t => L >= t[0]).pop()[1];
 const zk = n => pl(n, "bod", "body", "bodů") + " reputace";
 function addXP(n){
@@ -3391,7 +3724,7 @@ $("btnDebt").onclick = () => {
   credit -= r; debt -= r;
   store.set("prsi-credit", credit); store.set("sekera", debt);
   Sound.coin();
-  $("hubNote").textContent = debt ? `Splatila jsi ${gr(r)}, na sekeře zbývá ${gr(debt)}.` : `Sekera je splacená. Hospodský smazal čárky z tabule.`;
+  $("hubNote").textContent = debt ? `Splatil(a) jsi ${gr(r)}, na sekeře zbývá ${gr(debt)}.` : `Sekera je splacená. Hospodský smazal čárky z tabule.`;
   hubRender();
 };
 
@@ -3465,7 +3798,7 @@ qt("k_total", "kostky", r => { const k = pk(r, [3000, 4000, 5000, 6000, 8000]); 
 qt("k_margin", "kostky", r => { const k = pk(r, [1000, 2000, 3000]); return {n:1, k, rw: 20 + k / 100}; }, p => `Vyhraj kostky s náskokem aspoň ${nf(p.k)} bodů`, (p, nm, e) => nm === "kostky_end" && e.won && e.margin >= p.k ? 1 : 0);
 qt("k_comeback", "kostky", r => { const k = pk(r, [1000, 1500, 2000]); return {n:1, k, rw:45}; }, p => `Vyhraj kostky, i když robot vedl aspoň o ${nf(p.k)} bodů`, (p, nm, e) => nm === "kostky_end" && e.won && e.maxBehind >= p.k ? 1 : 0);
 qt("k_500", "kostky", r => { const n = ri(r, 3, 6); return {n, rw: 5 * n + 5}; }, p => `Zapiš ${p.n}× aspoň 500 bodů`, (p, nm, e) => nm === "k_bank" && e.pts >= 500 ? 1 : 0);
-qt("k_risk", "kostky", r => { const k = ri(r, 4, 6); return {n:1, k, rw: 10 * k - 15}; }, p => `Zapiš tah, ve kterém jsi házela aspoň ${p.k}×`, (p, nm, e) => nm === "k_bank" && e.rolls >= p.k ? 1 : 0);
+qt("k_risk", "kostky", r => { const k = ri(r, 4, 6); return {n:1, k, rw: 10 * k - 15}; }, p => `Zapiš tah, ve kterém jsi házel(a) aspoň ${p.k}×`, (p, nm, e) => nm === "k_bank" && e.rolls >= p.k ? 1 : 0);
 qt("k_first", "kostky", r => { const n = ri(r, 2, 4); return {n, rw: 5 * n + 5}; }, p => `Zapiš body hned po prvním hodu (${p.n}×)`, (p, nm, e) => nm === "k_bank" && e.rolls === 1 ? 1 : 0);
 qt("k_nobust", "kostky", r => { const k = ri(r, 1, 3); return {n:1, k, rw: 45 - 8 * k}; }, p => `Vyhraj kostky a propadni nejvýš ${p.k}×`, (p, nm, e) => nm === "kostky_end" && e.won && e.busts <= p.k ? 1 : 0);
 qt("k_play", "kostky", r => { const n = ri(r, 1, 2); return {n, rw: 10 * n + 5}; }, p => p.n === 1 ? "Odehraj hru kostek" : `Odehraj ${p.n} ${hru(p.n)} kostek`, (p, nm, e) => nm === "kostky_end" && !e.forfeit ? 1 : 0);
@@ -3481,7 +3814,7 @@ qt("p_suit", "prsi", r => { const s = pk(r, Object.keys(SUIT_P)), n = ri(r, 4, 8
 qt("p_kings", "prsi", r => { const n = ri(r, 2, 5); return {n, rw: 4 * n + 6}; }, p => `Zahraj ${p.n} ${pl(p.n, "krále", "krále", "králů")}`, (p, nm, e) => nm === "prsi_play" && e.r === "K" ? 1 : 0);
 qt("p_tens", "prsi", r => { const n = ri(r, 3, 6); return {n, rw: 3 * n + 6}; }, p => `Zahraj ${p.n} ${pl(p.n, "desítku", "desítky", "desítek")}`, (p, nm, e) => nm === "prsi_play" && e.r === "10" ? 1 : 0);
 qt("p_rdraw", "prsi", r => { const n = ri(r, 8, 15); return {n, rw: 2 * n + 5}; }, p => `Ať si robot líže, celkem ${p.n} karet`, (p, nm, e) => nm === "prsi_robot_drew" ? e.n : 0);
-qt("p_bighand", "prsi", r => { const k = ri(r, 7, 9); return {n:1, k, rw: 10 * k - 35}; }, p => `Vyhraj prší, i když jsi měla v ruce aspoň ${p.k} karet`, (p, nm, e) => nm === "prsi_end" && e.won && e.maxHand >= p.k ? 1 : 0);
+qt("p_bighand", "prsi", r => { const k = ri(r, 7, 9); return {n:1, k, rw: 10 * k - 35}; }, p => `Vyhraj prší, i když jsi měl(a) v ruce aspoň ${p.k} karet`, (p, nm, e) => nm === "prsi_end" && e.won && e.maxHand >= p.k ? 1 : 0);
 qt("p_rstart", "prsi", r => ({n:1, rw:20}), p => "Vyhraj prší, ve které začínal robot", (p, nm, e) => nm === "prsi_end" && e.won && e.starter === "r" ? 1 : 0);
 qt("p_nosvrsek", "prsi", r => ({n:1, rw:30}), p => "Vyhraj prší a nezahraj ani jednoho svrška", (p, nm, e) => nm === "prsi_end" && e.won && !e.svrsek ? 1 : 0);
 qt("z_pts", "zol", r => { const k = pk(r, [60, 80, 100, 120]); return {n:1, k, rw: k / 3}; }, p => `Vylož během jedné hry řady celkem za ${p.k} bodů`, (p, nm, e) => nm === "zol_end" && e.myPts >= p.k ? 1 : 0);
@@ -3497,12 +3830,22 @@ qt("k_crush", "kostky", r => { const k = pk(r, [3000, 4000, 5000]); return {n:1,
 qt("k_quick", "kostky", r => { const k = pk(r, [12, 15, 18]); return {n:1, k, rw: 70 - 2 * k}; }, p => `Vyhraj kostky nejvýš za ${p.k} tahů`, (p, nm, e) => nm === "kostky_end" && e.won && e.turns <= p.k ? 1 : 0);
 qt("k_rolls", "kostky", r => { const n = pk(r, [15, 20, 25, 30]); return {n, rw: n}; }, p => `Hoď kostkami celkem ${p.n}×`, (p, nm) => nm === "k_roll" ? 1 : 0);
 qt("a_play", "any", r => { const n = ri(r, 3, 6); return {n, rw: 5 * n}; }, p => `Odehraj dnes celkem ${p.n} ${hru(p.n)}`, (p, nm, e) => isEnd(nm) && !e.forfeit ? 1 : 0);
-qt("a_all", "any", r => ({n:3, rw:35}), p => "Zahraj si dnes prší, žolíky i kostky", (p, nm, e, q) => { if (!isEnd(nm) || e.forfeit) return 0; q.s[e.g] = 1; return {set: Object.keys(q.s).length}; });
+qt("a_all", "any", r => ({n:3, rw:35}), p => "Zahraj si dnes prší, žolíky i kostky", (p, nm, e, q) => { if (!isEnd(nm) || e.forfeit || !["prsi", "zol", "kostky"].includes(e.g)) return 0; q.s[e.g] = 1; return {set: Object.keys(q.s).length}; });
 qt("a_row", "any", r => { const n = ri(r, 2, 3); return {n, rw: n === 2 ? 25 : 45}; }, p => `Vyhraj ${p.n} hry za sebou (v jakékoli hře)`, (p, nm, e, q) => { if (!isEnd(nm)) return 0; q.s.c = e.won ? (q.s.c || 0) + 1 : 0; return {set: q.s.c}; });
+
+/* ---- herzky ---- */
+qt("h_win", "herzky", r => ({n:1, rw:45}), p => "Vyhraj hru herzek", (p, nm, e) => nm === "herz_end" && e.won ? 1 : 0);
+qt("h_play", "herzky", r => ({n:1, rw:15}), p => "Odehraj hru herzek", (p, nm, e) => nm === "herz_end" && !e.forfeit ? 1 : 0);
+qt("h_clean", "herzky", r => { const n = ri(r, 1, 3); return {n, rw: 10 * n + 10}; }, p => `Odehraj rozdání bez jediného trestného bodu${p.n > 1 ? ` (${p.n}×)` : ""}`, (p, nm, e) => nm === "herz_hand" && e.pts === 0 ? 1 : 0);
+qt("h_noq", "herzky", r => ({n:1, rw:30}), p => "Odehraj celou hru herzek a ani jednou si nevezmi pikovou dámu", (p, nm, e) => nm === "herz_end" && !e.forfeit && e.neverQ ? 1 : 0);
+qt("h_giveq", "herzky", r => { const n = ri(r, 1, 2); return {n, rw: 15 * n + 10}; }, p => p.n > 1 ? `Dej robotovi pikovou dámu (${p.n}×)` : "Dej robotovi pikovou dámu", (p, nm) => nm === "herz_gaveQ" ? 1 : 0);
+qt("h_low", "herzky", r => { const k = pk(r, [15, 25, 35]); return {n:1, k, rw: 75 - k}; }, p => `Vyhraj herzky s nejvýš ${p.k} body`, (p, nm, e) => nm === "herz_end" && e.won && e.total <= p.k ? 1 : 0);
+qt("h_hearts", "herzky", r => { const n = ri(r, 12, 22); return {n, rw: n + 5}; }, p => `Ať roboti seberou celkem ${p.n} srdcí`, (p, nm, e) => nm === "herz_hand" ? e.robotHearts : 0);
+qt("h_place", "herzky", r => ({n:1, rw:20}), p => "Skonči v herzkách aspoň druhý(á)", (p, nm, e) => nm === "herz_end" && !e.forfeit && e.place <= 2 ? 1 : 0);
 
 /* ---- týdenní ---- */
 qw("w_wins", r => { const n = ri(r, 8, 14); return {n, rw: 10 * n + 20}; }, p => `Vyhraj tento týden ${p.n} her`, (p, nm, e) => isEnd(nm) && e.won ? 1 : 0);
-qw("w_each", r => { const k = ri(r, 2, 3); return {n: 3 * k, k, rw: 60 * k}; }, p => `Vyhraj tento týden v prší, žolících i kostkách aspoň ${p.k}×`, (p, nm, e, q) => { if (!isEnd(nm) || !e.won) return 0; q.s[e.g] = Math.min(p.k, (q.s[e.g] || 0) + 1); return {set: Object.values(q.s).reduce((a, b) => a + b, 0)}; });
+qw("w_each", r => { const k = ri(r, 2, 3); return {n: 3 * k, k, rw: 60 * k}; }, p => `Vyhraj tento týden v prší, žolících i kostkách aspoň ${p.k}×`, (p, nm, e, q) => { if (!isEnd(nm) || !e.won || !["prsi", "zol", "kostky"].includes(e.g)) return 0; q.s[e.g] = Math.min(p.k, (q.s[e.g] || 0) + 1); return {set: Object.values(q.s).reduce((a, b) => a + b, 0)}; });
 qw("w_kpts", r => { const n = pk(r, [20000, 30000, 40000]); return {n, rw: n / 250}; }, p => `Zapiš tento týden v kostkách celkem ${nf(p.n)} bodů`, (p, nm, e) => nm === "k_bank" ? e.pts : 0);
 qw("w_melds", r => { const n = ri(r, 12, 25); return {n, rw: 6 * n}; }, p => `Vylož tento týden v žolících ${p.n} řad`, (p, nm) => nm === "zol_meld" ? 1 : 0);
 qw("w_cards", r => { const n = ri(r, 20, 40); return {n, rw: 3 * n}; }, p => `Zahraj tento týden v prší ${p.n} sedem a es`, (p, nm, e) => nm === "prsi_play" && (e.r === "7" || e.r === "E") ? 1 : 0);
@@ -3627,8 +3970,601 @@ const Quests = (() => {
   return {emit, render, ensure, toast, _gen: genDay, get day(){ ensure(); return D; }, get week(){ ensure(); return W; }};
 })();
 function refreshCredit(){
-  ["credit", "zCredit", "kCredit", "hubCredit"].forEach(id => { const el = $(id); if (el) el.textContent = `${gr(credit)}`; });
+  ["credit", "zCredit", "kCredit", "hCredit", "mCredit", "hubCredit"].forEach(id => { const el = $(id); if (el) el.textContent = `${gr(credit)}`; });
   if (screen === "hub") hubRender();
+}
+
+/* ===================================================================
+   HERZKY – ty a tři roboti, francouzské karty, hraje se do 60 bodů
+   =================================================================== */
+const H_NAMES = ["Ty", "Kokeš", "Martin", "Danek"], H_POS = ["", "vlevo", "naproti", "vpravo"];
+const H_LIMIT = 60, H_MONEY = [40, 10, -10, -20], H_RANKS = ["7", "8", "9", "10", "J", "Q", "K", "A"];
+const hv = c => c.r === "A" ? 14 : rv(c.r);
+const isQS = c => c.s === "s" && c.r === "Q";
+const hPts = c => c.s === "h" ? 1 : isQS(c) ? 8 : 0;
+const H_SUITS = ["c", "d", "s", "h"];
+let H = null, hTimer = null, hwins = {p:0, r:0};
+
+function hNewGame(){
+  H = {total:[0, 0, 0, 0], handNo:0, over:false, neverQ:true, log:""};
+  hNewHand();
+}
+function hNewHand(){
+  const deck = [];
+  // herzky se hrají s 32 kartami: od sedmy po eso
+  FSK.forEach(s => H_RANKS.forEach(r => deck.push({id:`${s}-${r}`, s, r})));
+  shuffle(deck);
+  H.hands = [0, 1, 2, 3].map(p => deck.slice(p * 8, p * 8 + 8));
+  H.took = [[], [], [], []];
+  H.trick = []; H.first = true; H.broken = false; H.qGone = false; H.win = null; H.anim = null;
+  H.leader = H.hands.findIndex(h => h.some(c => c.id === "c-7"));
+  H.turn = H.leader; H.phase = "play"; H.handNo++;
+  H.last = null; H.fresh = H.hands[0].map(c => c.id);
+  H.log = H.leader === 0 ? `${H.handNo}. rozdání. Máš křížovou sedmu, vynášíš.` : `${H.handNo}. rozdání. Křížovou sedmu má ${H_NAMES[H.leader]}, vynáší.`;
+}
+function hLegal(p){
+  const hand = H.hands[p];
+  if (!H.trick.length){
+    if (H.first) return hand.filter(c => c.id === "c-7");
+    if (!H.broken){ const nh = hand.filter(c => c.s !== "h"); if (nh.length) return nh; }
+    return hand.slice();
+  }
+  const led = H.trick[0].c.s, same = hand.filter(c => c.s === led);
+  if (same.length) return same;
+  if (H.first){ const safe = hand.filter(c => !hPts(c)); if (safe.length) return safe; }
+  return hand.slice();
+}
+function hWhy(p, c){
+  if (!H.trick.length){
+    if (H.first) return "První štych se vynáší křížovou sedmou.";
+    return "Srdce se nesmí vynášet, dokud někdo srdce nezahodil.";
+  }
+  const led = H.trick[0].c.s;
+  if (c.s !== led && H.hands[p].some(x => x.s === led)) return `Musíš přiznat barvu: zahraj ${FSU[led].n}.`;
+  return "V prvním štychu se srdce ani piková dáma nedávají.";
+}
+function hPlay(p, id){
+  const hand = H.hands[p], i = hand.findIndex(c => c.id === id);
+  if (i < 0) return;
+  const c = hand.splice(i, 1)[0];
+  H.trick.push({p, c});
+  H.anim = p;
+  if (c.s === "h" && !H.broken){ H.broken = true; }
+  if (isQS(c)) H.qGone = true;
+  Sound.card();
+  H.log = p === 0 ? `Zahrál(a) jsi ${zAcc(c)}.` : `${H_NAMES[p]} zahrál ${zAcc(c)}.`;
+  if (H.trick.length === 4){
+    const led = H.trick[0].c.s;
+    H.win = H.trick.filter(t => t.c.s === led).sort((a, b) => hv(b.c) - hv(a.c))[0].p;
+    const pts = H.trick.reduce((a, t) => a + hPts(t.c), 0);
+    H.log += H.win === 0 ? ` Štych bereš ty${pts ? ` (${pts} ${pl(pts, "bod", "body", "bodů")})` : ""}.` : ` Štych bere ${H_NAMES[H.win]}${pts ? ` (${pts} ${pl(pts, "bod", "body", "bodů")})` : ""}.`;
+    H.phase = "collect";
+  } else H.turn = (p + 1) % 4;
+  hCommit();
+}
+function hCollect(){
+  const w = H.win, cards = H.trick.map(t => t.c);
+  H.took[w].push(...cards);
+  const q = H.trick.find(t => isQS(t.c));
+  if (q && q.p === 0 && w !== 0) Quests.emit("herz_gaveQ", {});
+  if (q && w === 0) H.neverQ = false;
+  H.trick = []; H.first = false; H.win = null; H.anim = null;
+  if (H.hands.every(h => !h.length)) return hHandEnd();
+  H.leader = H.turn = w; H.phase = "play";
+  hCommit();
+}
+function hHandEnd(){
+  const pts = H.took.map(t => t.reduce((a, c) => a + hPts(c), 0));
+  H.last = pts;
+  pts.forEach((x, p) => H.total[p] += x);
+  Quests.emit("herz_hand", {pts: pts[0], tookQ: H.took[0].some(isQS), robotHearts: H.took.slice(1).reduce((a, t) => a + t.filter(c => c.s === "h").length, 0)});
+  if (Math.max(...H.total) >= H_LIMIT) return hFinish(false);
+  H.phase = "handEnd";
+  hCommit();
+}
+function hFinish(forfeit){
+  H.phase = "over"; H.over = true; H.forfeit = forfeit;
+  const me = H.total[0];
+  H.place = forfeit ? 4 : 1 + H.total.slice(1).filter(x => x < me).length;
+  const won = H.place === 1;
+  hwins[won ? "p" : "r"]++;
+  store.set("herz-wins", hwins);
+  H.delta = H_MONEY[H.place - 1];
+  H.repaid = pay(H.delta);
+  H.xp = won ? addXP(XP_WIN.herzky) : 0;
+  Quests.emit("herz_end", {g:"herzky", won, delta:H.delta, forfeit, total:me, place:H.place, neverQ:H.neverQ});
+  if (won) Sound.win(); else Sound.lose();
+  hCommit();
+}
+
+/* ---------- robot ---------- */
+function hRobotPick(p){
+  const L = hLegal(p), hand = H.hands[p], low = (a, b) => hv(a) - hv(b);
+  const cnt = s => hand.filter(c => c.s === s).length;
+  if (!H.trick.length){
+    // vynáší nízko, nerad srdce a vysoké piky, rád z krátké barvy (aby jí brzy neměl)
+    const sc = c => hv(c) + (c.s === "h" ? 6 : 0) + (c.s === "s" && hv(c) >= 12 && !H.qGone ? 20 : 0) + cnt(c.s) * 0.35;
+    return L.slice().sort((a, b) => sc(a) - sc(b))[0];
+  }
+  const led = H.trick[0].c.s;
+  if (L[0].s === led && hand.some(c => c.s === led)){
+    const high = Math.max(...H.trick.filter(t => t.c.s === led).map(t => hv(t.c)));
+    const pts = H.trick.reduce((a, t) => a + hPts(t.c), 0), last = H.trick.length === 3;
+    if (last && !pts){ const safe = L.filter(c => !isQS(c)).sort(low); if (safe.length) return safe[safe.length - 1]; }
+    const under = L.filter(c => hv(c) < high).sort(low);
+    if (under.length) return under[under.length - 1];
+    const pool = L.filter(c => !isQS(c)).sort(low), use_ = pool.length ? pool : L.slice().sort(low);
+    return last ? use_[use_.length - 1] : use_[0];
+  }
+  // nemá barvu: nejdřív pikovou dámu, pak vysoké piky, pak nejvyšší srdce, pak nejvyšší kartu
+  const q = L.find(isQS); if (q) return q;
+  const ak = L.filter(c => c.s === "s" && hv(c) > 12 && !H.qGone).sort(low); if (ak.length) return ak[ak.length - 1];
+  const hs = L.filter(c => c.s === "h").sort(low); if (hs.length) return hs[hs.length - 1];
+  return L.slice().sort(low)[L.length - 1];
+}
+function hStep(){
+  hTimer = null;
+  if (!H || screen !== "herzky") return;
+  if (H.phase === "collect") return hCollect();
+  if (H.phase === "play" && H.turn !== 0){ const c = hRobotPick(H.turn); hPlay(H.turn, c.id); }
+}
+function hSchedule(){
+  if (hTimer || !H || screen !== "herzky") return;
+  if (H.phase === "collect") hTimer = setTimeout(hStep, 1250);
+  else if (H.phase === "play" && H.turn !== 0) hTimer = setTimeout(hStep, 750);
+}
+
+/* ---------- vykreslení ---------- */
+function hCommit(){
+  H.msg = null;
+  store.set("herz-game", H);
+  hRender();
+  hSchedule();
+}
+const hSorted = h => h.slice().sort((a, b) => H_SUITS.indexOf(a.s) - H_SUITS.indexOf(b.s) || hv(a) - hv(b));
+const tookTxt = p => { const t = H.took[p], n = t.filter(c => c.s === "h").length, q = t.some(isQS); return (n ? `♥ ${n}` : "") + (q ? `${n ? " · " : ""}♠Q` : ""); };
+function hRender(){
+  if (!H || $("scrHerz").hidden) return;
+  const cr = $("hCredit");
+  cr.textContent = gr(credit);
+  cr.classList.toggle("low", credit < 30);
+  const now = H.took[0].reduce((a, c) => a + hPts(c), 0);
+  $("hScore").textContent = `Ty ${H.total[0]} b.${now ? ` (+${now})` : ""} · ${H.handNo}. rozdání · do ${H_LIMIT}`;
+  $("hSeats").innerHTML = [1, 2, 3].map(p => {
+    const n = H.hands[p].length;
+    return `<div class="seat${H.phase === "play" && H.turn === p ? " on" : ""}"><span class="nm">${H_NAMES[p]}</span><span class="pos">${H_POS[p]}</span>
+      <span class="pts">${H.total[p]} <small>b.</small></span><span class="took">${tookTxt(p)}</span>
+      <span class="backs" aria-label="${n} ${karta(n)}">${Array.from({length:n}, () => `<span class="zc">${ZBACK}</span>`).join("")}</span></div>`;
+  }).join("");
+  const slots = [0, 1, 2, 3].map(p => {
+    const t = H.trick.find(x => x.p === p);
+    return `<div class="slot s${p}${H.phase === "collect" && H.win === p ? " win" : ""}">${t ? `<div class="zc${H.anim === p ? " in" + p : ""}">${frFace(t.c)}</div>` : ""}</div>`;
+  }).join("");
+  $("hTrick").className = "htrick";
+  $("hTrick").innerHTML = slots + (H.broken ? `<span class="hbroken"><svg viewBox="0 0 100 100" aria-hidden="true">${use("f-h", 0, 0, 100)}</svg>srdce ve hře</span>` : "");
+  const mine = H.phase === "play" && H.turn === 0, legal = mine ? new Set(hLegal(0).map(c => c.id)) : null, fresh = new Set(H.fresh || []);
+  $("hPhand").innerHTML = hSorted(H.hands[0]).map(c =>
+    `<button type="button" class="zc${mine ? (legal.has(c.id) ? " ok" : " no") : ""}${fresh.has(c.id) ? " new" : ""}" data-id="${c.id}" aria-label="${zName(c)}">${frFace(c)}</button>`).join("");
+  $("hLog").textContent = H.log || "";
+  const say = $("hSay");
+  let s;
+  if (H.phase === "over") s = H.place === 1 ? "Vyhrál(a) jsi!" : `Hra skončila, jsi ${H.place}.`;
+  else if (H.phase === "handEnd") s = "Rozdání skončilo.";
+  else if (H.phase === "collect") s = H.win === 0 ? "Bereš štych." : `Štych bere ${H_NAMES[H.win]}.`;
+  else if (!mine) s = `Hraje ${H_NAMES[H.turn]}…`;
+  else if (!H.trick.length) s = H.first ? "Vynes křížovou sedmu." : (!H.broken && H.hands[0].some(c => c.s !== "h") ? "Vynášíš. Srdce zatím vynášet nesmíš." : "Vynášíš. Zahraj jakoukoli kartu.");
+  else { const led = H.trick[0].c.s; s = H.hands[0].some(c => c.s === led) ? `Přiznej barvu: ${FSU[led].n} ${FSU[led].sym}.` : "Barvu nemáš, můžeš se zbavit čehokoli."; }
+  say.textContent = H.msg || s;
+  say.classList.toggle("warn", !!H.msg);
+  H.fresh = []; H.anim = null;
+  hLayout();
+  if (H.phase === "handEnd" || H.phase === "over") hShowEnd(); else closeSheet("hEnd");
+}
+function hLayout(){
+  if (!H || $("scrHerz").hidden) return;
+  const ph = $("hPhand"), cards = [...ph.children], n = cards.length;
+  if (!n){ ph.style.height = "40px"; return; }
+  const W = ph.clientWidth, cw = cards[0].offsetWidth, ch = cards[0].offsetHeight, lift = 18;
+  const stepFor = k => k > 1 ? Math.min(cw * 1.04, (W - cw) / (k - 1)) : 0;
+  let rows = 1;
+  while (rows < 2 && stepFor(Math.ceil(n / rows)) < cw * 0.42) rows++;
+  const per = Math.ceil(n / rows), rowOff = Math.round(ch * 0.5);
+  cards.forEach((c, i) => {
+    const row = Math.floor(i / per), idx = i % per, k = Math.min(per, n - row * per), st = stepFor(k), total = cw + st * (k - 1);
+    c.style.left = Math.round((W - total) / 2 + idx * st) + "px";
+    c.style.top = (lift + row * rowOff) + "px";
+  });
+  ph.style.height = (lift + ch + (rows - 1) * rowOff + 4) + "px";
+}
+function hShowEnd(){
+  const over = H.phase === "over", order = [0, 1, 2, 3].sort((a, b) => H.total[a] - H.total[b]), best = Math.min(...H.total);
+  $("hEndEmblem").innerHTML = ["h", "s", "d", "c"].map(k => `<svg viewBox="0 0 100 100" aria-hidden="true">${use("f-" + k, 0, 0, 100)}</svg>`).join("");
+  $("hEndTab").innerHTML = `<tr><th>Hráč</th><th>Rozdání</th><th>Celkem</th></tr>` + order.map(p =>
+    `<tr class="${p === 0 ? "me" : ""}${over && H.total[p] === best ? " best" : ""}"><td>${H_NAMES[p]}</td><td class="${H.last && H.last[p] ? "plus" : ""}">${H.last ? (H.last[p] ? "+" + H.last[p] : "0") : "–"}</td><td>${H.total[p]}</td></tr>`).join("");
+  const m = $("hEndMoney");
+  if (over){
+    $("hEndTitle").textContent = H.forfeit ? "Hra vzdána" : H.place === 1 ? "Vyhrál(a) jsi!" : `Konec hry, jsi ${H.place}.`;
+    m.textContent = (H.delta >= 0 ? "+" : "−") + gr(Math.abs(H.delta));
+    m.className = "money " + (H.delta >= 0 ? "plus" : "minus");
+    m.hidden = false;
+    const who = H.total.findIndex(x => x >= H_LIMIT);
+    $("hEndText").textContent = (H.forfeit ? "Vzdaná hra se počítá jako poslední místo." : `${who === 0 ? "Ty jsi dosáhl(a)" : H_NAMES[who] + " dosáhl"} ${H_LIMIT} bodů, vyhrává nejnižší skóre.`) +
+      (moneyOn ? ` V měšci máš ${gr(credit)}.` + repaidNote(H.repaid || 0) : "") + xpNote(H.xp || 0);
+    $("hNext").textContent = "Hrát znovu";
+  } else {
+    $("hEndTitle").textContent = `Konec ${H.handNo}. rozdání`;
+    m.hidden = true;
+    const mine = H.last[0];
+    $("hEndText").textContent = mine === 0 ? "Žádný trestný bod, výborně!" : `Připsal(a) sis ${mine} ${pl(mine, "bod", "body", "bodů")}.` + (H.took[0].some(isQS) ? " Piková dáma je tvoje." : "");
+    $("hNext").textContent = "Další rozdání";
+  }
+  if ($("hEnd").hidden) openSheet("hEnd");
+}
+function hShake(id){
+  const b = $("hPhand").querySelector(`[data-id="${id}"]`);
+  if (b){ b.classList.remove("shake"); void b.offsetWidth; b.classList.add("shake"); }
+}
+$("hPhand").addEventListener("click", e => {
+  const b = e.target.closest(".zc[data-id]"); if (!b || !H || H.phase !== "play" || H.turn !== 0) return;
+  const c = H.hands[0].find(x => x.id === b.dataset.id); if (!c) return;
+  if (!hLegal(0).some(x => x.id === c.id)){ H.msg = hWhy(0, c); buzz(60); hRender(); hShake(c.id); return; }
+  buzz(15);
+  hPlay(0, c.id);
+});
+$("hNext").onclick = () => {
+  closeSheet("hEnd");
+  if (H.phase === "over"){ hStart(); return; }
+  hNewHand(); Sound.deal(); hCommit();
+};
+$("hEndHome").onclick = () => go("hub");
+$("hRulesOk").onclick = () => closeSheet("hRules");
+$("hMenuBtn").onclick = openMenu;
+function hStart(){
+  clearTimeout(hTimer); hTimer = null;
+  const bmsg = moneyOn && credit <= 0 ? borrow() : null;
+  hNewGame();
+  if (bmsg) H.log = bmsg;
+  Sound.deal();
+  closeSheet("hEnd");
+  hCommit();
+}
+function hEnter(){
+  if (!H){
+    const s = store.get("herz-game");
+    if (s && s.hands && s.total && s.phase !== "over") H = s; else hNewGame();
+  }
+  if (H.phase === "over") return hStart();
+  hCommit();
+  requestAnimationFrame(hLayout);
+  if (!store.get("herz-seen-rules")){ openSheet("hRules"); store.set("herz-seen-rules", true); }
+}
+
+/* ===================================================================
+   MARIÁŠ (beta) – volený mariáš ve třech, mariášky od sedmy po eso
+   =================================================================== */
+const M_NAMES = ["Ty", "Kokeš", "Martin"], M_POS = ["", "vlevo", "vpravo"];
+const M_GAMES = {hra:{n:"Hra", v:5, xp:15}, betl:{n:"Betl", v:15, xp:30}, durch:{n:"Durch", v:30, xp:30}};
+const M_ORD_HRA = ["7", "8", "9", "S", "V", "K", "10", "E"], M_ORD_BD = ["7", "8", "9", "10", "S", "V", "K", "E"];
+let M = null, mTimer = null, mscore = {p:0, r:0};
+const mSel = new Set();
+const mRank = c => (M.game === "hra" || !M.game ? M_ORD_HRA : M_ORD_BD).indexOf(c.r);
+const mPts = c => (c.r === "E" || c.r === "10") ? 10 : 0;
+const mTrumps = () => M.game === "hra" || !M.game;
+function mAcc(c){
+  const R = RINFO[c.r], adj = SUITS[c.s].adj;
+  if (R.g === "f") return adj + "ou " + R.n.slice(0, -1) + "u";
+  if (R.g === "m") return adj + "ého " + ({spodek:"spodka", "svršek":"svrška", "král":"krále"})[R.n];
+  return adj + "é " + R.n;
+}
+const mSuitAcc = s => ({srdce:"srdce", listy:"listy", kule:"kule", zaludy:"žaludy"})[s];
+
+function mNewGame(){
+  M = {round:0, firstF:0, log:""};
+  mNewRound();
+}
+function mNewRound(){
+  const deck = [];
+  SK.forEach(s => RANKS.forEach(r => deck.push({id:`m-${s}-${r}`, s, r})));
+  shuffle(deck);
+  M.F = (M.firstF + M.round) % 3; M.round++;
+  M.hands = [[], [], []];
+  // forhont dostane 12 karet (prvních 7 slouží k volbě trumfu), ostatní po 10
+  for (let p = 0; p < 3; p++){ const n = p === M.F ? 12 : 10; M.hands[p] = deck.splice(0, n); }
+  M.talon = []; M.trump = null; M.game = null; M.took = [[], [], []]; M.hl = [0, 0, 0]; M.hlLog = [];
+  M.trick = []; M.win = null; M.anim = null; M.lastW = null; M.res = null;
+  M.turn = M.F; M.phase = M.F === 0 ? "trump" : "prep";
+  mSel.clear();
+  M.fresh = M.hands[0].map(c => c.id);
+  M.log = M.F === 0 ? `${M.round}. kolo. Jsi forhont.` : `${M.round}. kolo. Forhontem je ${M_NAMES[M.F]}.`;
+}
+// kdo by štych právě bral
+function mWinner(trick){
+  const led = trick[0].c.s, tr = mTrumps() ? trick.filter(t => t.c.s === M.trump) : [];
+  const pool = tr.length ? tr : trick.filter(t => t.c.s === led);
+  return pool.slice().sort((a, b) => mRank(b.c) - mRank(a.c))[0];
+}
+const mBeats = (c, w) => (mTrumps() && c.s === M.trump && w.s !== M.trump) || (c.s === w.s && mRank(c) > mRank(w));
+// přiznat barvu, přebít; když barvu nemám, trumfovat (a přebít trumf)
+function mLegal(p){
+  const hand = M.hands[p];
+  if (!M.trick.length) return hand.slice();
+  const led = M.trick[0].c.s, w = mWinner(M.trick).c, same = hand.filter(c => c.s === led);
+  if (same.length){
+    if (w.s === led){ const hi = same.filter(c => mRank(c) > mRank(w)); return hi.length ? hi : same; }
+    return same;
+  }
+  if (mTrumps()){
+    const tr = hand.filter(c => c.s === M.trump);
+    if (tr.length){
+      if (w.s === M.trump){ const hi = tr.filter(c => mRank(c) > mRank(w)); return hi.length ? hi : tr; }
+      return tr;
+    }
+  }
+  return hand.slice();
+}
+function mWhy(p, c){
+  const led = M.trick[0].c.s, w = mWinner(M.trick).c, hand = M.hands[p];
+  if (c.s !== led && hand.some(x => x.s === led)) return `Musíš přiznat barvu: ${SUITS[led].n.toLowerCase()}.`;
+  if (c.s === led) return "Musíš přebít, máš vyšší kartu té barvy.";
+  if (mTrumps() && hand.some(x => x.s === M.trump)) return w.s === M.trump && c.s === M.trump ? "Musíš přebít trumf vyšším trumfem." : `Barvu nemáš, musíš dát trumf (${SUITS[M.trump].n.toLowerCase()}).`;
+  return "Tuhle kartu teď zahrát nemůžeš.";
+}
+function mPlay(p, id){
+  const hand = M.hands[p], i = hand.findIndex(c => c.id === id);
+  if (i < 0) return;
+  const c = hand.splice(i, 1)[0];
+  let hl = "";
+  if (M.game === "hra" && (c.r === "K" || c.r === "V") && hand.some(x => x.s === c.s && x.r === (c.r === "K" ? "V" : "K"))){
+    const v = c.s === M.trump ? 40 : 20;
+    M.hl[p] += v; M.hlLog.push({p, v, s:c.s});
+    hl = ` ${p === 0 ? "Hlásíš" : "Hlásí"} ${v} (${mSuitAcc(c.s)}).`;
+  }
+  M.trick.push({p, c}); M.anim = p;
+  Sound.card();
+  M.log = (p === 0 ? `Zahrál(a) jsi ${mAcc(c)}.` : `${M_NAMES[p]} zahrál ${mAcc(c)}.`) + hl;
+  if (M.trick.length === 3){
+    M.win = mWinner(M.trick).p;
+    M.log += M.win === 0 ? " Štych bereš ty." : ` Štych bere ${M_NAMES[M.win]}.`;
+    M.phase = "collect";
+  } else M.turn = (p + 1) % 3;
+  mCommit();
+}
+function mCollect(){
+  const w = M.win;
+  M.took[w].push(...M.trick.map(t => t.c));
+  M.trick = []; M.win = null; M.anim = null; M.lastW = w;
+  if (M.game === "betl" && w === M.F) return mRoundEnd(true);
+  if (M.game === "durch" && w !== M.F) return mRoundEnd(true);
+  if (M.hands.every(h => !h.length)) return mRoundEnd(false);
+  M.turn = w; M.phase = "play";
+  mCommit();
+}
+function mRoundEnd(early, forfeit){
+  const F = M.F, defs = [0, 1, 2].filter(p => p !== F);
+  let fwin, fp = 0, dp = 0;
+  if (M.game === "hra"){
+    const sum = p => M.took[p].reduce((a, c) => a + mPts(c), 0) + M.hl[p] + (M.lastW === p ? 10 : 0);
+    fp = sum(F); dp = defs.reduce((a, p) => a + sum(p), 0);
+    fwin = fp > dp;
+  } else if (M.game === "betl") fwin = M.took[F].length === 0;
+  else fwin = defs.every(p => M.took[p].length === 0);
+  if (forfeit) fwin = F !== 0;
+  const v = M_GAMES[M.game || "hra"].v, mine = F === 0 ? fwin : !fwin;
+  const delta = F === 0 ? (fwin ? 2 * v : -2 * v) : (fwin ? -v : v);
+  mscore[mine ? "p" : "r"]++; store.set("mar-score", mscore);
+  const repaid = pay(delta), xp = mine && !forfeit ? addXP(M_GAMES[M.game || "hra"].xp) : 0;
+  M.res = {fwin, fp, dp, delta, repaid, xp, early, mine, forfeit:!!forfeit};
+  Quests.emit("mar_end", {g:"marias", won:mine && !forfeit, delta, forfeit:!!forfeit});
+  if (mine) Sound.win(); else Sound.lose();
+  M.phase = "roundEnd";
+  mCommit();
+}
+
+/* ---------- volba forhonta ---------- */
+function mPickTrump(suit){
+  M.trump = suit; M.phase = "discard"; mSel.clear();
+  M.fresh = M.hands[0].slice(7).map(c => c.id);
+  M.log = `Trumf: ${SUITS[suit].n}. Bereš zbylých 5 karet.`;
+  Sound.draw(5);
+  mCommit();
+}
+function mDiscard(){
+  const cards = M.hands[0].filter(c => mSel.has(c.id));
+  if (cards.length !== 2) return mFlash("Vyber přesně dvě karty do talonu.");
+  if (cards.some(c => c.r === "E" || c.r === "10")) return mFlash("Eso ani desítku do talonu odložit nesmíš.");
+  M.hands[0] = M.hands[0].filter(c => !mSel.has(c.id));
+  M.talon = cards; mSel.clear();
+  M.phase = "choose"; Sound.card();
+  M.log = "Dvě karty leží v talonu.";
+  mCommit();
+}
+function mChoose(game){
+  M.game = game; M.phase = "play"; M.turn = M.F;
+  M.log = game === "hra" ? `Hraješ hru, trumf ${SUITS[M.trump].n.toLowerCase()}. Vynášíš.` : game === "betl" ? "Hraješ betl: nesmíš vzít ani jeden štych. Vynášíš." : "Hraješ durch: musíš vzít všechny štychy. Vynášíš.";
+  mCommit();
+}
+function mFlash(msg){ M.msg = msg; buzz(60); mRender(); }
+
+/* ---------- robot ---------- */
+function mRobotPrep(p){
+  const h = M.hands[p], first = h.slice(0, 7);
+  const sc = s => { const cs = first.filter(c => c.s === s); return cs.length * 3 + cs.reduce((a, c) => a + M_ORD_HRA.indexOf(c.r), 0) * .5; };
+  M.trump = SK.slice().sort((a, b) => sc(b) - sc(a))[0];
+  const cnt = s => h.filter(c => c.s === s).length;
+  const pair = c => (c.r === "K" || c.r === "V") && h.some(x => x.s === c.s && x.r === (c.r === "K" ? "V" : "K"));
+  const cand = h.filter(c => c.r !== "E" && c.r !== "10").sort((a, b) =>
+    ((a.s === M.trump) * 100 + pair(a) * 50 + M_ORD_HRA.indexOf(a.r) * 2 + cnt(a.s) * 3) - ((b.s === M.trump) * 100 + pair(b) * 50 + M_ORD_HRA.indexOf(b.r) * 2 + cnt(b.s) * 3));
+  const out = cand.slice(0, 2);
+  M.hands[p] = h.filter(c => !out.includes(c));
+  M.talon = out; M.game = "hra"; M.phase = "play"; M.turn = p;
+  M.log = `${M_NAMES[p]} volí trumf ${SUITS[M.trump].n.toLowerCase()} a hraje hru. Vynáší.`;
+  mCommit();
+}
+function mRobotPick(p){
+  const L = mLegal(p), low = (a, b) => mRank(a) - mRank(b);
+  const isT = c => mTrumps() && c.s === M.trump;
+  if (M.game !== "hra"){
+    // betl: forhont podlézá, obrana hraje nízko; durch: všichni co nejvýš
+    if (M.game === "durch") return L.slice().sort(low).pop();
+    if (p === M.F && M.trick.length){ const w = mWinner(M.trick).c, under = L.filter(c => !mBeats(c, w)).sort(low); if (under.length) return under.pop(); }
+    return L.slice().sort(low)[0];
+  }
+  if (!M.trick.length){
+    const nonT = L.filter(c => !isT(c)), tr = L.filter(isT).sort(low);
+    const ace = nonT.find(c => c.r === "E"); if (ace) return ace;
+    if (p === M.F && tr.length >= 4) return tr[tr.length - 1];
+    const pool = nonT.filter(c => c.r !== "10"), use_ = pool.length ? pool : (nonT.length ? nonT : L);
+    const cnt = s => use_.filter(c => c.s === s).length;
+    return use_.slice().sort((a, b) => cnt(b.s) - cnt(a.s) || low(a, b))[0];
+  }
+  const w = mWinner(M.trick), friendly = p !== M.F && w.p !== M.F;
+  const beat = L.filter(c => mBeats(c, w.c));
+  if (friendly){
+    const no = L.filter(c => !mBeats(c, w.c));
+    if (no.length) return no.slice().sort((a, b) => mPts(b) - mPts(a) || low(a, b))[0];   // namazat desítku či eso spoluhráči
+    return L.slice().sort(low)[0];
+  }
+  if (beat.length) return beat.slice().sort((a, b) => (isT(a) - isT(b)) || low(a, b))[0];
+  return L.slice().sort((a, b) => mPts(a) - mPts(b) || low(a, b))[0];
+}
+function mStep(){
+  mTimer = null;
+  if (!M || screen !== "marias") return;
+  if (M.phase === "prep") return mRobotPrep(M.F);
+  if (M.phase === "collect") return mCollect();
+  if (M.phase === "play" && M.turn !== 0){ const c = mRobotPick(M.turn); mPlay(M.turn, c.id); }
+}
+function mSchedule(){
+  if (mTimer || !M || screen !== "marias") return;
+  if (M.phase === "prep") mTimer = setTimeout(mStep, 1300);
+  else if (M.phase === "collect") mTimer = setTimeout(mStep, 1250);
+  else if (M.phase === "play" && M.turn !== 0) mTimer = setTimeout(mStep, 800);
+}
+
+/* ---------- vykreslení ---------- */
+function mCommit(){
+  M.msg = null;
+  store.set("mar-game", M);
+  mRender();
+  mSchedule();
+}
+const mSorted = h => h.slice().sort((a, b) => SK.indexOf(a.s) - SK.indexOf(b.s) || M_ORD_HRA.indexOf(a.r) - M_ORD_HRA.indexOf(b.r));
+const mTookPts = p => M.took[p].reduce((a, c) => a + mPts(c), 0);
+function mRender(){
+  if (!M || $("scrMar").hidden) return;
+  const cr = $("mCredit");
+  cr.textContent = gr(credit);
+  cr.classList.toggle("low", credit < 30);
+  $("mScore").innerHTML = `Mariáš <span class="beta-tag">beta</span> · ${M.round}. kolo${M.game ? " · " + M_GAMES[M.game].n : ""}`;
+  const tc = $("mTrump");
+  tc.hidden = !(M.trump && mTrumps() && M.phase !== "trump");
+  if (!tc.hidden) tc.innerHTML = `<svg viewBox="0 0 100 100" aria-hidden="true">${use(M.trump, 0, 0, 100)}</svg>${SUITS[M.trump].n}`;
+  $("mSeats").innerHTML = [1, 2].map(p => {
+    const n = M.hands[p].length, pts = mTookPts(p) + M.hl[p];
+    return `<div class="seat${M.phase === "play" && M.turn === p ? " on" : ""}">${M.F === p ? '<span class="badge">forhont</span>' : ""}<span class="nm">${M_NAMES[p]}</span><span class="pos">${M_POS[p]}</span>
+      <span class="pts">${M.game === "hra" ? pts : M.took[p].length / 3} <small>${M.game === "hra" ? "b." : "štychů"}</small></span><span class="took">${M.hl[p] ? "hlášky " + M.hl[p] : ""}</span>
+      <span class="backs">${Array.from({length:n}, () => `<span class="zc">${BACK}</span>`).join("")}</span></div>`;
+  }).join("");
+  const slots = [0, 1, 2].map(p => { const t = M.trick.find(x => x.p === p);
+    return `<div class="slot m${p}${M.phase === "collect" && M.win === p ? " win" : ""}">${t ? `<div class="zc${M.anim === p ? " in" + p : ""}">${faceSVG(t.c)}</div>` : ""}</div>`; }).join("");
+  $("mTrick").innerHTML = slots + (M.talon.length ? `<span class="talon"><span class="zc">${BACK}</span><span class="zc">${BACK}</span>talon</span>` : "");
+  // ruka
+  const mine = M.phase === "play" && M.turn === 0, legal = mine ? new Set(mLegal(0).map(c => c.id)) : null, fresh = new Set(M.fresh || []);
+  const first7 = M.phase === "trump" ? new Set(M.hands[0].slice(0, 7).map(c => c.id)) : null;
+  const shown = M.phase === "trump" ? M.hands[0].slice(0, 7) : M.hands[0];
+  $("mPhand").innerHTML = mSorted(shown).map(c => {
+    let cls = "";
+    if (mine) cls = legal.has(c.id) ? " ok" : " no";
+    else if (M.phase === "discard" && mSel.has(c.id)) cls = " sel";
+    return `<button type="button" class="zc${cls}${fresh.has(c.id) ? " new" : ""}" data-id="${c.id}" aria-label="${cardName(c)}">${faceSVG(c)}</button>`;
+  }).join("");
+  // rada a tlačítka
+  $("mLog").textContent = M.log || "";
+  let s = "", acts = "";
+  const b = (a, cls, txt, dis) => `<button type="button" class="zbtn ${cls}" data-act="${a}"${dis ? " disabled" : ""}>${txt}</button>`;
+  if (M.phase === "trump") s = "Jsi forhont. Z těchto sedmi karet vyber trumf: klepni na kartu té barvy.";
+  else if (M.phase === "discard"){ s = `Vyber 2 karty do talonu (ne eso ani desítku). Vybráno ${mSel.size} ze 2.`; acts = b("disc", "main", "Odložit do talonu", mSel.size !== 2); }
+  else if (M.phase === "choose"){ s = "Co budeš hrát?"; acts = b("hra", "main", `Hra (${SUITS[M.trump].n.toLowerCase()})`) + b("betl", "alt", "Betl") + b("durch", "alt", "Durch"); }
+  else if (M.phase === "prep") s = `${M_NAMES[M.F]} vybírá trumf a odkládá do talonu…`;
+  else if (M.phase === "collect") s = M.win === 0 ? "Bereš štych." : `Štych bere ${M_NAMES[M.win]}.`;
+  else if (M.phase === "roundEnd") s = M.res && M.res.mine ? "Kolo je tvoje!" : "Kolo skončilo.";
+  else if (!mine) s = `Hraje ${M_NAMES[M.turn]}…`;
+  else if (!M.trick.length) s = "Vynášíš. Zahraj jakoukoli kartu.";
+  else { const led = M.trick[0].c.s, hand = M.hands[0]; s = hand.some(c => c.s === led) ? `Přiznej barvu: ${SUITS[led].n.toLowerCase()}${legal.size < hand.filter(c => c.s === led).length ? " a přebij" : ""}.` : (mTrumps() && hand.some(c => c.s === M.trump) ? "Barvu nemáš, dej trumf." : "Barvu ani trumf nemáš, můžeš dát cokoli."); }
+  const say = $("mSay");
+  say.textContent = M.msg || s; say.classList.toggle("warn", !!M.msg);
+  $("mActs").innerHTML = acts; $("mActs").hidden = !acts;
+  M.fresh = []; M.anim = null;
+  mLayout();
+  if (M.phase === "roundEnd") mShowEnd(); else closeSheet("mEnd");
+}
+function mLayout(){
+  if (!M || $("scrMar").hidden) return;
+  const ph = $("mPhand"), cards = [...ph.children], n = cards.length;
+  if (!n){ ph.style.height = "40px"; return; }
+  const W = ph.clientWidth, cw = cards[0].offsetWidth, ch = cards[0].offsetHeight, lift = 18;
+  const stepFor = k => k > 1 ? Math.min(cw * 1.04, (W - cw) / (k - 1)) : 0;
+  let rows = 1;
+  while (rows < 2 && stepFor(Math.ceil(n / rows)) < cw * 0.42) rows++;
+  const per = Math.ceil(n / rows), rowOff = Math.round(ch * 0.5);
+  cards.forEach((c, i) => {
+    const row = Math.floor(i / per), idx = i % per, k = Math.min(per, n - row * per), st = stepFor(k), total = cw + st * (k - 1);
+    c.style.left = Math.round((W - total) / 2 + idx * st) + "px"; c.style.top = (lift + row * rowOff) + "px";
+  });
+  ph.style.height = (lift + ch + (rows - 1) * rowOff + 4) + "px";
+}
+function mShowEnd(){
+  const R = M.res, F = M.F, g = M_GAMES[M.game || "hra"];
+  $("mEndEmblem").innerHTML = SK.map(k => `<svg viewBox="0 0 100 100" aria-hidden="true">${use(k, 0, 0, 100)}</svg>`).join("");
+  $("mEndTitle").textContent = R.forfeit ? "Kolo vzdáno" : R.mine ? "Vyhrál(a) jsi kolo!" : "Kolo prohráno";
+  const m = $("mEndMoney");
+  m.textContent = (R.delta >= 0 ? "+" : "−") + gr(Math.abs(R.delta)); m.className = "money " + (R.delta >= 0 ? "plus" : "minus");
+  const fName = F === 0 ? "Ty (forhont)" : `${M_NAMES[F]} (forhont)`, dName = F === 0 ? "Kokeš a Martin" : (F === 1 ? "Ty a Martin" : "Ty a Kokeš");
+  if (M.game === "hra"){
+    const hl = p => M.hl[p] ? ` · hlášky ${M.hl[p]}` : "";
+    $("mEndTab").innerHTML = `<tr><th>Strana</th><th>Body</th></tr><tr class="${F === 0 ? "me" : ""}"><td>${fName}</td><td>${R.fp}</td></tr><tr class="${F !== 0 ? "me" : ""}"><td>${dName}</td><td>${R.dp}</td></tr>`;
+    $("mEndText").textContent = `${g.n}: ${R.fwin ? "forhont má víc bodů a vyhrává" : "obrana má aspoň tolik bodů a vyhrává"}.` + (M.hlLog.length ? " Hlášky: " + M.hlLog.map(h => `${M_NAMES[h.p] === "Ty" ? "ty" : M_NAMES[h.p]} ${h.v}`).join(", ") + "." : "") + (M.lastW !== null ? ` Poslední štych (+10) ${M.lastW === 0 ? "jsi vzal(a) ty" : "vzal " + M_NAMES[M.lastW]}.` : "");
+  } else {
+    $("mEndTab").innerHTML = "";
+    $("mEndText").textContent = M.game === "betl"
+      ? (R.fwin ? `Betl vyšel: ${F === 0 ? "nevzal(a) jsi" : M_NAMES[F] + " nevzal"} ani jeden štych.` : `Betl nevyšel: ${F === 0 ? "vzal(a) jsi štych" : M_NAMES[F] + " vzal štych"}.`)
+      : (R.fwin ? `Durch vyšel: ${F === 0 ? "vzal(a) jsi" : M_NAMES[F] + " vzal"} všechny štychy.` : "Durch nevyšel: obrana vzala štych.");
+  }
+  $("mEndText").textContent += (moneyOn ? ` V měšci máš ${gr(credit)}.` + repaidNote(R.repaid || 0) : "") + xpNote(R.xp || 0);
+  if ($("mEnd").hidden) openSheet("mEnd");
+}
+$("mPhand").addEventListener("click", e => {
+  const btn = e.target.closest(".zc[data-id]"); if (!btn || !M) return;
+  const id = btn.dataset.id, c = M.hands[0].find(x => x.id === id); if (!c) return;
+  if (M.phase === "trump"){ buzz(15); return mPickTrump(c.s); }
+  if (M.phase === "discard"){ if (mSel.has(id)) mSel.delete(id); else if (mSel.size < 2) mSel.add(id); buzz(10); M.msg = null; return mRender(); }
+  if (M.phase !== "play" || M.turn !== 0) return;
+  if (!mLegal(0).some(x => x.id === id)){ M.msg = mWhy(0, c); buzz(60); mRender(); const b2 = $("mPhand").querySelector(`[data-id="${id}"]`); if (b2){ b2.classList.remove("shake"); void b2.offsetWidth; b2.classList.add("shake"); } return; }
+  buzz(15); mPlay(0, id);
+});
+$("mActs").addEventListener("click", e => {
+  const b = e.target.closest("button[data-act]"); if (!b || b.disabled || !M) return;
+  const a = b.dataset.act;
+  if (a === "disc") mDiscard(); else if (M.phase === "choose") mChoose(a);
+});
+$("maNext").onclick = () => {
+  closeSheet("mEnd");
+  const bmsg = moneyOn && credit <= 0 ? borrow() : null;
+  mNewRound(); if (bmsg) M.log = bmsg;
+  Sound.deal(); mCommit();
+};
+$("mEndHome").onclick = () => go("hub");
+$("maRulesOk").onclick = () => closeSheet("maRules");
+$("mMenuBtn").onclick = openMenu;
+function mEnter(){
+  if (!M){
+    const s = store.get("mar-game");
+    if (s && s.hands && s.phase && s.phase !== "roundEnd") M = s; else mNewGame();
+  }
+  if (M.phase === "roundEnd"){ mNewRound(); Sound.deal(); }
+  mCommit();
+  requestAnimationFrame(mLayout);
+  if (!store.get("mar-seen-rules")){ openSheet("maRules"); store.set("mar-seen-rules", true); }
 }
 
 /* ===================================================================
@@ -3645,6 +4581,10 @@ const ICONS = {
       <circle cx="23" cy="41" r="4.2" fill="#3a2414"/><circle cx="34" cy="52" r="4.2" fill="#3a2414"/><circle cx="45" cy="63" r="4.2" fill="#3a2414"/></g>
     <g transform="rotate(10 68 46)"><rect x="46" y="22" width="44" height="44" rx="9" fill="#b8261f" stroke="#3a2414" stroke-width="2.4"/>
       <circle cx="57" cy="33" r="4.2" fill="#fbf6e8"/><circle cx="79" cy="33" r="4.2" fill="#fbf6e8"/><circle cx="57" cy="55" r="4.2" fill="#fbf6e8"/><circle cx="79" cy="55" r="4.2" fill="#fbf6e8"/></g></svg>`,
+  herzky: `<svg viewBox="0 0 100 100" aria-hidden="true">
+    <g transform="rotate(12 60 84)"><rect x="44" y="16" width="40" height="60" rx="5" fill="#fbf6e8" stroke="#3a2414" stroke-width="2"/>
+      <text x="50" y="34" font-family="Georgia, serif" font-weight="700" font-size="15" fill="#23262c">Q</text>${use("f-s", 54, 38, 22)}</g>
+    <g transform="rotate(-10 34 60)">${use("f-h", 10, 32, 46)}</g></svg>`,
   marias: `<svg viewBox="0 0 100 100" aria-hidden="true">
     ${[-20, 0, 20].map((a, i) => `<g transform="rotate(${a} 50 88)"><rect x="32" y="18" width="36" height="54" rx="5" fill="#fbf6e8" stroke="#3a2414" stroke-width="2"/>${use(["kule","listy","zaludy"][i], 38, 30, 24)}</g>`).join("")}</svg>`
 };
@@ -3652,18 +4592,19 @@ const GAMES = {
   prsi:   {name:"Prší",    sub:"proti robotovi"},
   zol:    {name:"Žolíky",  sub:"proti robotovi"},
   kostky: {name:"Kostky",  sub:"farma"},
-  marias: {name:"Mariáš",  sub:"s dvěma roboty", soon:true}
+  herzky: {name:"Herzky",  sub:"se třemi roboty"},
+  marias: {name:"Mariáš",  sub:"s dvěma roboty", beta:true}
 };
 Object.keys(GAMES).forEach(k => {
   const g = GAMES[k], el = document.querySelector(`.coaster[data-game="${k}"]`);
-  el.innerHTML = ICONS[k] + `<b>${g.name}</b>` + (g.soon ? `<span class="stamp">BRZY</span>` : "");
-  el.setAttribute("aria-label", g.name + (g.soon ? " – připravuje se" : ""));
+  el.innerHTML = `<span class="cin">${ICONS[k]}<b>${g.name}</b></span>` + (g.soon ? `<span class="stamp">BRZY</span>` : g.beta ? `<span class="stamp beta">BETA</span>` : "");
+  el.setAttribute("aria-label", g.name + (g.soon ? " – připravuje se" : g.beta ? " – beta verze" : ""));
 });
 document.querySelector(".coasters").addEventListener("click", e => {
   const b = e.target.closest(".coaster"); if (!b) return;
   const k = b.dataset.game;
   if (GAMES[k].soon){
-    $("hubNote").textContent = `${GAMES[k].name} se teprve připravuje. Zatím si zahraj prší, žolíky nebo kostky.`;
+    $("hubNote").textContent = `${GAMES[k].name} se teprve připravuje. Zatím si zahraj prší, žolíky, kostky nebo herzky.`;
     buzz(30);
     return;
   }
@@ -3688,19 +4629,25 @@ function hubRender(){
 function go(name){
   if (screen === "prsi"){ clearTimeout(robotTimer); robotTimer = null; }
   if (screen === "zol"){ clearTimeout(zTimer); zTimer = null; }
-  if (screen === "kostky"){ clearTimeout(kTimer); kTimer = null; }
-  ["menu","rules","zRules","kRules","endSheet","zEnd","kEnd","confirmNew","picker","sekera"].forEach(closeSheet);
+  if (screen === "kostky"){ clearTimeout(kTimer); kTimer = null; kPicking = false; }
+  if (screen === "herzky"){ clearTimeout(hTimer); hTimer = null; }
+  if (screen === "marias"){ clearTimeout(mTimer); mTimer = null; }
+  ["menu","rules","zRules","kRules","kPick","hRules","maRules","endSheet","zEnd","kEnd","hEnd","mEnd","confirmNew","picker","sekera"].forEach(closeSheet);
   if (moneyOn && name !== "hub" && credit <= 0){ const want = name; name = "hub"; setTimeout(() => openSekera(want), 0); }
   screen = name;
   $("hub").hidden = name !== "hub";
   $("scrPrsi").hidden = name !== "prsi";
   $("scrZol").hidden = name !== "zol";
   $("scrKostky").hidden = name !== "kostky";
+  $("scrHerz").hidden = name !== "herzky";
+  $("scrMar").hidden = name !== "marias";
   $("hubNote").textContent = "";
   if (name === "hub") hubRender();
   else if (name === "prsi") prsiEnter();
   else if (name === "zol") zEnter();
   else if (name === "kostky") kEnter();
+  else if (name === "herzky") hEnter();
+  else if (name === "marias") mEnter();
 }
 
 /* ---------- start ---------- */
@@ -3708,6 +4655,8 @@ function boot(data){
   score = store.get("prsi-score") || {p:0, r:0};
   zscore = store.get("zol-score") || {p:0, r:0};
   kwins = store.get("kostky-wins") || {p:0, r:0};
+  hwins = store.get("herz-wins") || {p:0, r:0};
+  mscore = store.get("mar-score") || {p:0, r:0};
   const c = store.get("prsi-credit");
   credit = typeof c === "number" ? c : 100;
   debtLoad();
@@ -3715,6 +4664,8 @@ function boot(data){
   if (data && data.S) S = data.S;
   if (data && data.Z) Z = data.Z;
   if (data && data.K){ K = data.K; K.anim = false; }
+  if (data && data.H) H = data.H;
+  if (data && data.M) M = data.M;
   go(data && data.screen ? data.screen : "hub");
   hideSplash();
 }
@@ -3731,7 +4682,7 @@ function hideSplash(){
   }, wait));
 }
 const hot = window.claude && window.claude.hot;
-if (hot && hot.snapshot) hot.snapshot(() => ({S, Z, K, screen}));
+if (hot && hot.snapshot) hot.snapshot(() => ({S, Z, K, H, M, screen}));
 if (hot && hot.ready) hot.ready(boot); else boot((hot && hot.data) || {});
 })();
 </script>

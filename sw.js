@@ -1,6 +1,6 @@
 // Service worker: aplikace se uloží do telefonu a jde hrát i bez internetu.
 // Po každé změně souborů zvyš číslo verze, aby si telefony stáhly novou verzi.
-const VERSION = "hospoda-v14";
+const VERSION = "hospoda-v20";
 const APP = [
   "./",
   "./index.html",

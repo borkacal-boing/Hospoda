@@ -1,11 +1,11 @@
 # Hospoda
 
-Hospodské hry proti robotovi v jedné aplikaci pro iPhone: **prší**, **žolíky** a **kostky (farma)**. Mariáš se připravuje.
+Hospodské hry proti robotovi v jedné aplikaci pro iPhone: **prší**, **žolíky**, **kostky (farma)** (tři soupeři: Danek, Martin, Kokeš) a **herzky** (32 karet, proti třem robotům) a **mariáš** (volený, ve třech, zatím beta).
 Všechny hry mají společnou peněženku (na začátku 100 grošů), hudbu na akordeon a nastavitelnou velikost písma. Hru o groše jde v menu úplně vypnout.
 
-**Reputace a úrovně:** za každou výhru (prší 20, kostky 30, žolíky 40) a za splněné úkoly přibývají body reputace. Úroveň je vidět v Hospodě, každá další je náročnější (100, 150, 200 … bodů) a nejvyšší je úroveň 100.
+**Reputace a úrovně:** za každou výhru (prší 20, kostky 30, žolíky a herzky 40) a za splněné úkoly přibývají body reputace. Úroveň je vidět v Hospodě, každá další je náročnější (100, 150, 200 … bodů) a nejvyšší je úroveň 100.
 
-**Úkoly od hospodského:** každý den 3 nové úkoly a jeden týdenní, s odměnou do peněženky. Úkoly se losují z data ze 71 šablon s náhodnými čísly, takže fungují i bez internetu a na všech telefonech vyjdou ve stejný den stejné. Stejný druh úkolu se vrátí nejdřív po 10 dnech a úplně stejné zadání nejdřív po měsíci. Kdo splní všechny tři úkoly několik dní po sobě, dostane rostoucí bonus.
+**Úkoly od hospodského:** každý den 3 nové úkoly a jeden týdenní, s odměnou do peněženky. Úkoly se losují z data ze 79 šablon s náhodnými čísly, takže fungují i bez internetu a na všech telefonech vyjdou ve stejný den stejné. Stejný druh úkolu se vrátí nejdřív po 10 dnech a úplně stejné zadání nejdřív po měsíci. Kdo splní všechny tři úkoly několik dní po sobě, dostane rostoucí bonus.
 
 **Hra na sekeru:** když dojdou peníze, hospodský půjčí 100 grošů a udělá čárku na tabuli. Dokud dluh trvá, jde polovina každé výhry na splátku. Nejvíc jsou tři čárky; kdo si půjčí počtvrté, tomu hospodský dluh odpustí, ale vynuluje skóre ve všech hrách.
 
@@ -34,6 +34,6 @@ Všechny hry mají společnou peněženku (na začátku 100 grošů), hudbu na a
 
 ## Úpravy a nové verze
 
-Když změníš `index.html`, zvyš v `sw.js` číslo verze (`hospoda-v14` → `hospoda-v15`) a nahraj oba soubory. Telefon si novou verzi stáhne při dalším otevření s internetem (někdy je potřeba aplikaci zavřít a otevřít dvakrát).
+Když změníš `index.html`, zvyš v `sw.js` číslo verze (`hospoda-v20` → `hospoda-v21`) a nahraj oba soubory. Telefon si novou verzi stáhne při dalším otevření s internetem (někdy je potřeba aplikaci zavřít a otevřít dvakrát).
 
 Postup (peníze, reputace, skóre, sekera, úkoly, rozehrané hry) se ukládá jen v daném telefonu. Verze z Claude a verze z GitHubu mají každá svůj vlastní postup.

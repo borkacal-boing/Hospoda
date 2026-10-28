@@ -1,7 +1,7 @@
 {
   "name": "Hospoda",
   "short_name": "Hospoda",
-  "description": "Hospodské hry proti robotovi: prší, žolíky a kostky, s denními úkoly.",
+  "description": "Hospodské hry proti robotovi: prší, žolíky, kostky, herzky a mariáš, s denními úkoly.",
   "lang": "cs",
   "start_url": "./",
   "scope": "./",
